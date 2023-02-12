@@ -2,3 +2,4 @@ env
 .env
 v1.py
 .DS_Store
+slash_commands_version.py
