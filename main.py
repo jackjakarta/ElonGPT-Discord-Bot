@@ -1,11 +1,17 @@
 import openai
 import discord
 import os
+import requests
 
-
-# Load the API key and Discord Token from the .env file
+# Load the Discord Token from the .env file
 TOKEN = os.environ['DISCORD_TOKEN']
+
+# Load the OpenAI API Key from the .env file
 openai.api_key = os.environ['OPENAI_API_KEY']
+
+# Load the CoinMarketCap API Key from the .env file
+API_URL = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest"
+API_KEY = os.environ['CMC_PRO_API_KEY']
 
 client = discord.Client(intents=discord.Intents.all())
 
@@ -26,10 +32,10 @@ async def on_message(message):
         response = openai.Completion.create(
             engine="text-davinci-003",
             prompt=(f"{question}"),
-            max_tokens=250,
+            max_tokens=900,
             n = 1,
             stop=None,
-            temperature=0.9,
+            temperature=1,
         )
         await message.channel.send(response["choices"][0]["text"])
 
@@ -40,7 +46,7 @@ async def on_message(message):
         response = openai.Completion.create(
             model="text-davinci-003",
             prompt=prompt,
-            temperature=0.3,
+            temperature=0.5,
             max_tokens=500,
             top_p=1.0,
             frequency_penalty=0.0,
@@ -56,7 +62,7 @@ async def on_message(message):
             model="text-davinci-003",
             prompt=prompt,
             temperature=0.6,
-            max_tokens=150,
+            max_tokens=250,
             top_p=1.0,
             frequency_penalty=0.0,
             presence_penalty=0.0
@@ -71,7 +77,7 @@ async def on_message(message):
             model="text-davinci-003",
             prompt=prompt,
             temperature=0.6,
-            max_tokens=350,
+            max_tokens=550,
             top_p=1.0,
             frequency_penalty=0.0,
             presence_penalty=0.0
@@ -86,7 +92,7 @@ async def on_message(message):
             model="text-davinci-003",
             prompt=prompt,
             temperature=0.4,
-            max_tokens=400,
+            max_tokens=600,
             top_p=1.0,
             frequency_penalty=0.0,
             presence_penalty=0.0
@@ -99,8 +105,8 @@ async def on_message(message):
         response = openai.Completion.create(
             model="text-davinci-003",
             prompt=prompt,
-            temperature=0.9,
-            max_tokens=150,
+            temperature=1,
+            max_tokens=400,
             top_p=1.0,
             frequency_penalty=0.0,
             presence_penalty=0.0
@@ -113,7 +119,7 @@ async def on_message(message):
         response = openai.Completion.create(
             model="text-davinci-003",
             prompt=prompt,
-            temperature=0.9,
+            temperature=1,
             max_tokens=150,
             top_p=1.0,
             frequency_penalty=0.0,
@@ -131,6 +137,9 @@ async def on_message(message):
                     "?image - generate image based on a description \n"\
                     "?joke - tell me a joke \n"\
                     "?roll - roll the dice \n"\
+                    "?price - insert cryptocurrency symbol to get price and market cap \n"\
+                    "?collect - collects inserted text and stores it in a document on the server \n"\
+                    "?showdata - shows the contets of the document mentioned previously \n"\
                     "?help - list of all commands \n"
             
         embed = discord.Embed(title="list of commands:", description=help_text, color=0x4BA081)
@@ -157,4 +166,44 @@ async def on_message(message):
         await message.channel.send(image_url)
 
 
+    if message.content.startswith("?price"):
+        # Split the message into parts
+        parts = message.content.split(" ")
+        # Extract the cryptocurrency symbol
+        symbol = parts[1].upper()
+        # Make the API request to CoinMarketCap
+        params = {
+            "symbol": symbol,
+            "convert": "USD",
+            "CMC_PRO_API_KEY": API_KEY
+        }
+        response = requests.get(API_URL, params=params)
+        # Check if the API request was successful
+        if response.status_code == 200:
+            # Parse the JSON response
+            data = response.json()
+            # Extract the cryptocurrency price and market capitalization
+            price = data["data"][symbol]["quote"]["USD"]["price"]
+            market_cap = data["data"][symbol]["quote"]["USD"]["market_cap"]
+            # Send the cryptocurrency price and market capitalization to the Discord channel
+            await message.channel.send(f"The price of {symbol} is ${price:.2f} and its market capitalization is ${market_cap:.2f}.")
+        else:
+            # Send an error message to the Discord channel
+            await message.channel.send(f"Could not get price and market capitalization for {symbol}")   
+            
+    if message.content.startswith("?collect"):
+        # Open the data.txt file in append mode
+        with open("data.txt", "a") as file:
+            # Write the message content to the file
+            file.write(message.content[8:] + "\n")
+        await message.channel.send("Your information has been saved.")
+    elif message.content == "?showdata":
+        # Open the data.txt file in read mode
+        with open("data.txt", "r") as file:
+            # Read the contents of the file
+            data = file.read()
+        await message.channel.send("Data:\n" + data)             
+
+
 client.run(TOKEN)
+
