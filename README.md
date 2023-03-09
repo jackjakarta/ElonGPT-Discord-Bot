@@ -2,7 +2,7 @@
 
 Install the packages from the requirements.txt file in a python virtual enviroment by running pip3 install -r requirements.txt .
 
-Use a .env file for your Discord Token and OpenAI API Key.
+Use a .env file for your Discord Token, OpenAI API Key and CoinMarketCap API Key.
 
 Run main.py 
 
