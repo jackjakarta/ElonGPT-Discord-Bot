@@ -25,9 +25,22 @@ async def on_ready():
 async def on_message(message):
     if message.author == client.user:
         return
-
     
     if message.content.startswith("?ask"):
+        question = message.content[9:]
+        response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+              #{"role": "system", "content": "You are a helpful assistant."},
+              {"role": "user", "content": f"{question}"},
+            ]
+        )
+        answer = response['choices'][0]['message']['content']
+        #embed = discord.Embed(title="ChatGPT Response", description=answer, color=0x4BA081)
+        await message.channel.send(answer) 
+
+    
+    if message.content.startswith("?gpt3"):
         question = message.content[5:]
         response = openai.Completion.create(
             engine="text-davinci-003",
@@ -39,7 +52,7 @@ async def on_message(message):
         )
         await message.channel.send(response["choices"][0]["text"])
 
-        
+
     if message.content.startswith("?recipe"):
         ingredients = message.content[8:]
         prompt = f"Write a recipe based on these ingredients:\n\n{ingredients}"
@@ -129,7 +142,8 @@ async def on_message(message):
   
   
     if message.content.startswith("?help"):
-        help_text = "?ask - insert a question and get an answer \n" \
+        help_text = "?ask - insert a question and get an answer using the new gpt-3.5-turbo model \n" \
+                    "?gpt3 - insert a question and get an answer using the text-davinci-003 model \n"\
                     "?recipe - insert ingredients separeted by commas and get a recipe \n"\
                     "?fact - insert a topic and get a fun fact \n"\
                     "?keypoints - insert a topic to highlight 5 keypoints about that topic \n"\
