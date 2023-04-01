@@ -31,12 +31,11 @@ async def on_message(message):
         response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
-              #{"role": "system", "content": "You are a helpful assistant."},
+              {"role": "system", "content": "You are ChatGPT, a large language model trained by OpenAI. Answer as concisely as possible."},
               {"role": "user", "content": f"{question}"},
             ]
         )
         answer = response['choices'][0]['message']['content']
-        #embed = discord.Embed(title="ChatGPT Response", description=answer, color=0x4BA081)
         await message.channel.send(answer) 
 
     
@@ -203,7 +202,8 @@ async def on_message(message):
             await message.channel.send(f"The price of {symbol} is ${price:.2f} and its market capitalization is ${market_cap:.2f}.")
         else:
             # Send an error message to the Discord channel
-            await message.channel.send(f"Could not get price and market capitalization for {symbol}")   
+            await message.channel.send(f"Could not get price and market capitalization for {symbol}")  
+
             
     if message.content.startswith("?collect"):
         # Open the data.txt file in append mode
@@ -220,4 +220,3 @@ async def on_message(message):
 
 
 client.run(TOKEN)
-
