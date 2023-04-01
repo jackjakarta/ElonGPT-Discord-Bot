@@ -30,7 +30,7 @@ The bot uses the text-davinci-003 and image-alpha-001 models from OpenAI to gene
 
 ?price - insert cryptocurrency symbol to get price and market cap
 
-?collect - collects inserted text and stores it in a document on the server 
+?collect - collects inserted text and stores it in the data.txt file locally
 
 ?showdata - shows the contets of the document mentioned previously 
 
