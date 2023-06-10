@@ -8,11 +8,15 @@ Run main.py
 
 # Bot Information
 
-The bot uses the text-davinci-003 and image-alpha-001 models from OpenAI to generate responses and send them in text channels in discord. The Bot also uses CMC API to get the price and market capitalization of cryptocurrencies. 
+The bot uses the text-davinci-003, gpt-3.5-turbo, gpt-4 and image-alpha-001 models from OpenAI to generate responses and send them in text channels in discord. The Bot also uses CMC API to get the price and market capitalization of cryptocurrencies. 
 
 # List of discord commands
 
-?ask - insert a question and get an answer 
+?ask - insert a question and get an answer using the new gpt-4 model 
+
+?fast - insert a question and get an answer using the new gpt-3.5-turbo model
+
+?old - insert a question and get an answer using the text-davinci-003 model 
 
 ?recipe - insert ingredients separeted by commas and get a recipe 
 
