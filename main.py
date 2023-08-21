@@ -22,6 +22,7 @@ async def on_ready():
     guild_count = len(client.guilds)
     print(f"{client.user} has connected to Discord!")
     print(f"{client.user} is active on {guild_count} server(s).")
+        
 
 @client.event
 async def on_message(message):
@@ -29,147 +30,118 @@ async def on_message(message):
         return
     
 
-    if message.content.startswith("?ask"):
-        question = message.content[9:]
-        response = openai.ChatCompletion.create(
-        model="gpt-4",
-        messages=[
-              {"role": "system", "content": "You are ChatGPT, a large language model trained by OpenAI. Answer as concisely as possible."},
-              {"role": "user", "content": f"{question}"},
-            ]
-        )
-        answer = response['choices'][0]['message']['content']
-        await message.channel.send(answer)
+    if message.content.startswith("?info"):
+        guild_count = len(client.guilds)
+        server_count = f"The bot is active on {guild_count} server(s)."
+        embed = discord.Embed(title="bot activity", description=server_count, color=0x4BA081)
+        await message.channel.send(embed=embed)
 
 
     if message.content.startswith("?fast"):
-        question = message.content[9:]
+        chatinp = message.content[9:]
         response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
               {"role": "system", "content": "You are ChatGPT, a large language model trained by OpenAI. Answer as concisely as possible."},
-              {"role": "user", "content": f"{question}"},
+              {"role": "user", "content": f"{chatinp}"},
             ]
         )
         answer = response['choices'][0]['message']['content']
-        await message.channel.send(answer)      
+        #embed = discord.Embed(title="ChatGPT Response", description=answer, color=0x4BA081)
+        await message.channel.send(answer) 
 
-    
-    if message.content.startswith("?old"):
-        question = message.content[5:]
+
+    if message.content.startswith("?ask"):
+        gpt4inp = message.content[9:]
+        response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[
+              {"role": "system", "content": "You are ChatGPT, a large language model trained by OpenAI. Answer as concisely as possible."},
+              {"role": "user", "content": f"{gpt4inp}"},
+            ]
+        )
+        answer = response['choices'][0]['message']['content']
+        #embed = discord.Embed(title="ChatGPT Response", description=answer, color=0x4BA081)
+        await message.channel.send(answer) 
+
+
+    if message.content.startswith("?gpt"):
+        question = message.content[8:]
         response = openai.Completion.create(
             engine="text-davinci-003",
-            prompt=(f"{question}"),
+            prompt=question,
             max_tokens=900,
             n = 1,
             stop=None,
             temperature=1,
         )
-        await message.channel.send(response["choices"][0]["text"])
+        await message.channel.send(response["choices"][0]["text"])     
 
 
     if message.content.startswith("?recipe"):
-        ingredients = message.content[8:]
+        ingredients = message.content[9:]
         prompt = f"Write a recipe based on these ingredients:\n\n{ingredients}"
-        response = openai.Completion.create(
-            model="text-davinci-003",
-            prompt=prompt,
-            temperature=0.5,
-            max_tokens=500,
-            top_p=1.0,
-            frequency_penalty=0.0,
-            presence_penalty=0.0
-        )  
-        await message.channel.send(response["choices"][0]["text"])
+        response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+              {"role": "system", "content": "You are ChefGPT, a master chef that provides the best recipes."},
+              {"role": "user", "content": f"{prompt}"},
+            ]
+        )
+        recipe = response['choices'][0]['message']['content']
+        await message.channel.send(recipe)
     
-  
+   
     if message.content.startswith("?fact"):
-        topic = message.content[4:]
+        topic = message.content[5:]
         prompt = f"Tell me a fun fact about:\n\n{topic}"
         response = openai.Completion.create(
             model="text-davinci-003",
             prompt=prompt,
-            temperature=0.6,
+            temperature=0.9,
             max_tokens=250,
             top_p=1.0,
             frequency_penalty=0.0,
             presence_penalty=0.0
         )  
         await message.channel.send(response["choices"][0]["text"])
-
-        
-    if message.content.startswith("?keypoints"):
-        subject = message.content[4:]
-        prompt = f"Highlight 5 keypoints about:\n\n{subject}"
-        response = openai.Completion.create(
-            model="text-davinci-003",
-            prompt=prompt,
-            temperature=0.6,
-            max_tokens=550,
-            top_p=1.0,
-            frequency_penalty=0.0,
-            presence_penalty=0.0
-        )  
-        await message.channel.send(response["choices"][0]["text"])   
-
-        
-    if message.content.startswith("?study"):
-        studytopic = message.content[4:]
-        prompt = f"What are 5 key points I should know when studying:\n\n{studytopic}"
-        response = openai.Completion.create(
-            model="text-davinci-003",
-            prompt=prompt,
-            temperature=0.4,
-            max_tokens=600,
-            top_p=1.0,
-            frequency_penalty=0.0,
-            presence_penalty=0.0
-        )  
-        await message.channel.send(response["choices"][0]["text"])  
-
+    
 
     if message.content.startswith("?joke"):
-        prompt = "Tell me a joke"
-        response = openai.Completion.create(
-            model="text-davinci-003",
-            prompt=prompt,
-            temperature=1,
-            max_tokens=400,
-            top_p=1.0,
-            frequency_penalty=0.0,
-            presence_penalty=0.0
-        )  
-        await message.channel.send(response["choices"][0]["text"])
+        question = message.content[9:]
+        response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[
+              {"role": "system", "content": "You are Bill Burr the stand up comedian and you tell very funny jokes."},
+              {"role": "user", "content": "Tell me a smart and funny joke"},
+            ],
+        )
+        answer = response['choices'][0]['message']['content']
+        #embed = discord.Embed(title="ChatGPT Response", description=answer, color=0x4BA081)
+        await message.channel.send(answer)   
+    
+
+    if message.content.startswith("?roll"):
+        question = message.content[9:]
+        response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+              {"role": "system", "content": "You are a dice roller. You only roll the one dice and respond with the result of the dice roll."},
+              {"role": "user", "content": "Roll the dice"},
+            ]
+        )
+        answer = response['choices'][0]['message']['content']
+        #embed = discord.Embed(title="ChatGPT Response", description=answer, color=0x4BA081)
+        await message.channel.send(answer)      
 
   
-    if message.content.startswith("?roll"):
-        prompt = "Roll the dice"
-        response = openai.Completion.create(
-            model="text-davinci-003",
-            prompt=prompt,
-            temperature=1,
-            max_tokens=150,
-            top_p=1.0,
-            frequency_penalty=0.0,
-            presence_penalty=0.0
-        )  
-        await message.channel.send(response["choices"][0]["text"])
-  
-  
     if message.content.startswith("?help"):
-        help_text = "?ask - insert a question and get an answer using the new gpt-4 model \n" \
-                    "?fast - insert a question and get an answer using the new gpt-3.5-turbo model \n" \
-                    "?old - insert a question and get an answer using the text-davinci-003 model \n"\
-                    "?recipe - insert ingredients separeted by commas and get a recipe \n"\
-                    "?fact - insert a topic and get a fun fact \n"\
-                    "?keypoints - insert a topic to highlight 5 keypoints about that topic \n"\
-                    "?study - insert a topic and get study notes \n"\
-                    "?image - generate image based on a description \n"\
-                    "?joke - tell me a joke \n"\
+        help_text = "?ask - insert a question and get an answer from Elon (gpt-4) \n"\
+                    "?fast - insert a question and get an answer in fast mode (gpt-3.5) \n"\
+                    "?image - generate an image based on a description \n"\
                     "?roll - roll the dice \n"\
                     "?price - insert cryptocurrency symbol to get price and market cap \n"\
-                    "?collect - collects inserted text and stores it in a document on the server \n"\
-                    "?showdata - shows the contets of the document mentioned previously \n"\
+                    "?poll - example: ?poll what color?/blue/red/yellow \n" \
                     "?help - list of all commands \n"
             
         embed = discord.Embed(title="list of commands:", description=help_text, color=0x4BA081)
@@ -219,8 +191,8 @@ async def on_message(message):
             await message.channel.send(f"The price of {symbol} is ${price:.2f} and its market capitalization is ${market_cap:.2f}.")
         else:
             # Send an error message to the Discord channel
-            await message.channel.send(f"Could not get price and market capitalization for {symbol}")  
-
+            await message.channel.send(f"Could not get price and market capitalization for {symbol}")   
+     
             
     if message.content.startswith("?collect"):
         # Open the data.txt file in append mode
@@ -234,6 +206,22 @@ async def on_message(message):
             # Read the contents of the file
             data = file.read()
         await message.channel.send("Data:\n" + data)             
+
+
+    if message.content.startswith("?poll"):
+        # Get the poll question and answer options
+        poll_data = message.content[6:].split('/')
+        question = poll_data[0].strip()
+        options = [option.strip() for option in poll_data[1:]]
+        # Create the poll message embed
+        embed = discord.Embed(title=question, color=0x4BA081)
+        for i, option in enumerate(options):
+            embed.add_field(name=f"{i+1}. {option}", value="\u200b", inline=False)
+        # Send the poll message and save it to a variable
+        poll_message = await message.channel.send(embed=embed)
+        # Add the reactions to the poll message
+        for i in range(len(options)):
+            await poll_message.add_reaction(f'{i+1}\u20e3')
 
 
 client.run(TOKEN)
