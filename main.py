@@ -1,7 +1,11 @@
 import openai
 import discord
-import os
 import requests
+import time
+import random
+import string
+import os
+import urllib.parse
 
 # Load the Discord Token from the .env file
 TOKEN = os.environ['DISCORD_TOKEN']
@@ -166,6 +170,22 @@ async def on_message(message):
 
         # Send the URL as a message in Discord
         await message.channel.send(image_url)
+
+        # Save the image to a folder on disk
+        image_response = requests.get(image_url, stream=True)
+        if image_response.status_code == 200:
+            image_extension = image_url.split(".")[-1].split("?")[0]
+            random_string = ''.join(random.choices(string.ascii_letters, k=6))
+            timestamp = int(time.time())
+            image_filename = f"generated_image_{timestamp}_{random_string}.{image_extension}"
+            image_path = os.path.join("image_folder", image_filename)
+
+            with open(image_path, 'wb') as image_file:
+                for chunk in image_response.iter_content(8192):
+                    image_file.write(chunk)
+            print(f"Image saved at: {image_path}")
+        else:
+            print("Failed to retrieve the image.")        
 
 
     if message.content.startswith("?price"):
