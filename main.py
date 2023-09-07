@@ -8,14 +8,14 @@ import os
 import urllib.parse
 
 # Load the Discord Token from the .env file
-TOKEN = os.environ['DISCORD_TOKEN']
+TOKEN = os.getenv("DISCORD_TOKEN")
 
 # Load the OpenAI API Key from the .env file
-openai.api_key = os.environ['OPENAI_API_KEY']
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Load the CoinMarketCap API Key from the .env file
 API_URL = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest"
-API_KEY = os.environ['CMC_PRO_API_KEY']
+API_KEY = os.getenv("CMC_PRO_API_KEY")
 
 client = discord.Client(intents=discord.Intents.all())
 
