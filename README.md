@@ -1,41 +1,51 @@
+# Discord Bot with AI Integration
+
+This is a Discord bot that integrates with various AI models to provide fun and useful features. It uses the OpenAI API for natural language processing tasks and image generation with DALL-E. It also interacts with the CoinMarketCap API for cryptocurrency data retrieval.
+ 
+# Features
+
+Question Answering: Ask questions using the ?ask command and receive answers from the gpt-4 model.
+
+Image Generation: Generate images based on descriptions using the DALL-E model with the ?image command.
+
+Cryptocurrency Price: Get the price and market capitalization of a cryptocurrency using the ?price command.
+
+Polls: Create polls with multiple options using the ?poll command.
+
 # Bot Setup
 
-Install the packages from the requirements.txt file in a python virtual enviroment by running pip3 install -r requirements.txt .
+Clone this repository to your local machine.
 
-Use a .env file for your Discord Token, OpenAI API Key and CoinMarketCap API Key.
+Create a virtual environment (optional but recommended).
 
-Run main.py 
+Install the required dependencies using pip3 install -r requirements.txt.
 
-# Bot Information
+Set up environment variables for your Discord bot token, OpenAI API key, and CoinMarketCap API key in a .env file.
 
-The bot uses the text-davinci-003, gpt-3.5-turbo, gpt-4 and image-alpha-001 models from OpenAI to generate responses and send them in text channels in discord. The Bot also uses CMC API to get the price and market capitalization of cryptocurrencies. 
+Run the bot using python3 main.py.
 
-# List of discord commands
+# Discord Commands
 
-?ask - insert a question and get an answer using the new gpt-4 model 
+?help - Get a list of all available commands.
 
-?fast - insert a question and get an answer using the new gpt-3.5-turbo model
+?ask <question> - Ask a question and get an answer from the gpt-4 model.
 
-?old - insert a question and get an answer using the text-davinci-003 model 
+?fast <question> - Get a quick answer using the gpt-3.5-turbo model.
 
-?recipe - insert ingredients separeted by commas and get a recipe 
+?gpt <question> - Get an answer from the old gpt-3 model.
 
-?fact - insert a topic and get a fun fact 
+?image <description> - Generate an image based on a description.
 
-?keypoints - insert a topic to highlight 5 keypoints about that topic 
+?price <symbol> - Get the price and market cap of a cryptocurrency.
 
-?study - insert a topic and get study notes 
+?poll <question>/<option1>/<option2>/... - Create a poll with options.
 
-?image - generate image based on a description 
+?roll - Roll a dice and get the result.
 
-?joke - tell me a joke 
+?joke - GPT tells you a joke.
 
-?roll - roll the dice 
+?collect <data> - Collect and save user-provided data.
 
-?price - insert cryptocurrency symbol to get price and market cap
+?showdata - Display collected data.
 
-?collect - collects inserted text and stores it in the data.txt file locally
-
-?showdata - shows the contets of the document mentioned previously 
-
-?help - list of all commands
+?info - Bot activity.
