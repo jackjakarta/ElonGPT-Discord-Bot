@@ -6,6 +6,7 @@ import random
 import string
 import os
 import urllib.parse
+from functions_module import save_data, load_data
 
 # Load the Discord Token from the .env file
 TOKEN = os.getenv("DISCORD_TOKEN")
@@ -42,7 +43,8 @@ async def on_message(message):
 
 
     if message.content.startswith("?fast"):
-        chatinp = message.content[9:]
+        chatinp = message.content[6:]
+        json_data = load_data("fine_tune.json")
         response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
@@ -52,11 +54,15 @@ async def on_message(message):
         )
         answer = response['choices'][0]['message']['content']
         #embed = discord.Embed(title="ChatGPT Response", description=answer, color=0x4BA081)
-        await message.channel.send(answer) 
+        await message.channel.send(answer)
+        json_data.append({"prompt": chatinp, "completion": answer})
+        save_data("fine_tune.json", json_data)
+        print("Prompt - Completion Pair saved to fine_tune.json file!")  
 
 
     if message.content.startswith("?ask"):
-        gpt4inp = message.content[9:]
+        gpt4inp = message.content[5:]
+        json_data = load_data("fine_tune.json")
         response = openai.ChatCompletion.create(
         model="gpt-4",
         messages=[
@@ -66,11 +72,15 @@ async def on_message(message):
         )
         answer = response['choices'][0]['message']['content']
         #embed = discord.Embed(title="ChatGPT Response", description=answer, color=0x4BA081)
-        await message.channel.send(answer) 
+        await message.channel.send(answer)
+        json_data.append({"prompt": gpt4inp, "completion": answer})
+        save_data("fine_tune.json", json_data)
+        print("Prompt - Completion Pair saved to fine_tune.json file!")  
 
 
     if message.content.startswith("?gpt"):
-        question = message.content[8:]
+        question = message.content[5:]
+        json_data = load_data("fine_tune.json")
         response = openai.Completion.create(
             engine="text-davinci-003",
             prompt=question,
@@ -79,7 +89,11 @@ async def on_message(message):
             stop=None,
             temperature=1,
         )
-        await message.channel.send(response["choices"][0]["text"])     
+        answer = response["choices"][0]["text"]
+        await message.channel.send(answer)
+        json_data.append({"prompt": question, "completion": answer})
+        save_data("fine_tune.json", json_data)
+        print("Prompt - Completion Pair saved to fine_tune.json file!")     
 
 
     if message.content.startswith("?recipe"):
@@ -97,7 +111,7 @@ async def on_message(message):
     
    
     if message.content.startswith("?fact"):
-        topic = message.content[5:]
+        topic = message.content[6:]
         prompt = f"Tell me a fun fact about:\n\n{topic}"
         response = openai.Completion.create(
             model="text-davinci-003",
@@ -245,3 +259,4 @@ async def on_message(message):
 
 
 client.run(TOKEN)
+
