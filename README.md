@@ -32,20 +32,8 @@ Run the bot using python3 main.py.
 
 ?fast 'question' - Get a quick answer using the gpt-3.5-turbo model.
 
-?gpt 'question' - Get an answer from the old gpt-3 model.
-
 ?image 'description' - Generate an image based on a description.
 
 ?price 'symbol' - Get the price and market cap of a cryptocurrency.
 
 ?poll 'question'/'option1'/'option2'/... - Create a poll with options.
-
-?roll - Roll a dice and get the result.
-
-?joke - GPT tells you a joke.
-
-?collect 'data' - Collect and save user-provided data.
-
-?showdata - Display collected data.
-
-?info - Bot activity.
