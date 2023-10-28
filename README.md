@@ -20,7 +20,7 @@ Create a virtual environment (optional but recommended).
 
 Install the required dependencies using pip3 install -r requirements.txt.
 
-Set up environment variables for your Discord bot token, OpenAI API key, and CoinMarketCap API key in a .env file.
+Create a 'keys.py' file to store the variables for the Discord Bot Token and OpenAI and CoinMarketCap API keys.
 
 Run the bot using python3 main.py.
 
