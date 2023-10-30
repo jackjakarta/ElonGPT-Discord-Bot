@@ -1,11 +1,9 @@
 import openai
 import discord
 import requests
-import time
 import random
 import string
 import os
-import urllib.parse
 from keys import OPENAI_API_KEY, DISCORD_TOKEN, CMC_PRO_API_KEY
 from functions_module import save_data, load_data
 
@@ -106,10 +104,8 @@ async def on_message(message):
             # Save the image to a folder on disk
             image_response = requests.get(image_url, stream=True)
             if image_response.status_code == 200:
-                image_extension = image_url.split(".")[-1].split("?")[0]
-                random_string = ''.join(random.choices(string.ascii_letters, k=6))
-                timestamp = int(time.time())
-                image_filename = f"generated_image_{timestamp}_{random_string}.{image_extension}"
+                random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
+                image_filename = f"image_{random_string}.png"
                 image_path = os.path.join("image_folder", image_filename)
 
                 with open(image_path, 'wb') as image_file:
