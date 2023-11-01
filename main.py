@@ -186,6 +186,21 @@ async def on_message(message):
         for i in range(len(options)):
             await poll_message.add_reaction(f'{i+1}\u20e3')
 
+    # ChuckNorris Command
+    if message.content.startswith("?joke"):
+        try:
+            joke_url = "https://api.chucknorris.io/jokes/random?category=science"
+            api_response = requests.get(joke_url)
+            joke = api_response.json()
+            joke_format = joke["value"]
+
+            await message.channel.send(joke_format)
+        except Exception as e:
+            embed = discord.Embed(title="Unknown Error:", description=e, color=0x4BA081)
+            await message.channel.send(embed=embed)
+            print(f"Unknown Error: {e}")
+
+
     # Help Command
     if message.content.startswith("?help"):
         help_text = "?ask - insert a question and get an answer from Elon (gpt-4) \n"\
