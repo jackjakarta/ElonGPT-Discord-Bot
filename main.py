@@ -1,4 +1,4 @@
-import openai
+from openai import OpenAI
 import discord
 import requests
 import random
@@ -10,9 +10,6 @@ from functions_module import save_data, load_data
 
 # Replace with your own Discord bot token
 TOKEN = DISCORD_TOKEN
-
-# Replace with your own OpenAI API key
-openai.api_key = OPENAI_API_KEY
 
 # Replace with your own CMC API Key
 API_URL = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest"
@@ -38,16 +35,17 @@ async def on_message(message):
     # GPT 4
     if message.content.startswith("?ask"):
         try:
+            ai = OpenAI(api_key=OPENAI_API_KEY)
             gpt4_input = message.content[5:]
             json_data = load_data("fine_tune.json")
-            response = openai.ChatCompletion.create(
+            response = ai.chat.completions.create(
             model="gpt-4",
             messages=[
                 {"role": "system", "content": "You are ChatGPT, a large language model trained by OpenAI. Answer as concisely as possible."},
                 {"role": "user", "content": gpt4_input},
                 ]
             )
-            answer = response['choices'][0]['message']['content']
+            answer = response.choices[0].message.content
             #embed = discord.Embed(title="ChatGPT Response", description=answer, color=0x4BA081)
             await message.channel.send(answer)
             json_data.append({"prompt": gpt4_input, "completion": answer})
@@ -61,16 +59,17 @@ async def on_message(message):
     # GPT 3.5 Turbo
     if message.content.startswith("?fast"):
         try:
+            ai = OpenAI(api_key=OPENAI_API_KEY)
             gpt3_input = message.content[6:]
             json_data = load_data("fine_tune.json")
-            response = openai.ChatCompletion.create(
+            response = ai.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are ChatGPT, a large language model trained by OpenAI. Answer as concisely as possible."},
                 {"role": "user", "content": gpt3_input},
                 ]
             )
-            answer = response['choices'][0]['message']['content']
+            answer = response.choices[0].message.content
             #embed = discord.Embed(title="ChatGPT Response", description=answer, color=0x4BA081)
             await message.channel.send(answer)
             json_data.append({"prompt": gpt3_input, "completion": answer})
@@ -84,19 +83,22 @@ async def on_message(message):
     # Image Generation with DALL-E
     if message.content.startswith("?image"):
         try:
+            ai = OpenAI(api_key=OPENAI_API_KEY)
             # Get the text input
             text = message.content[7:]
 
             # Generate an image using the Dall-E model
             img_prompt = text
-            response = openai.Image.create(
-                prompt=img_prompt,
-                n=1,
-                size="1024x1024"
-            )
+            response = ai.images.generate(
+            model="dall-e-3",
+            prompt=img_prompt,
+            size="1024x1024",
+            quality="standard",
+            n=1,
+        )
             
             # Get the URL of the generated image
-            image_url = response['data'][0]['url']
+            image_url = response.data[0].url
 
             # Send the URL as a message in Discord
             await message.channel.send(image_url)
@@ -122,16 +124,17 @@ async def on_message(message):
     # Recipe Generator
     if message.content.startswith("?recipe"):
         try:
+            ai = OpenAI(api_key=OPENAI_API_KEY)
             ingredients = message.content[8:]
             recipe_prompt = f"Write a recipe based on these ingredients:\n\n{ingredients}"
-            response = openai.ChatCompletion.create(
+            response = ai.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are ChefGPT, a master chef that provides the best recipes."},
                 {"role": "user", "content": recipe_prompt},
                 ]
             )
-            recipe = response['choices'][0]['message']['content']
+            recipe = response.choices[0].message.content
             await message.channel.send(recipe)
             with open("recipes.txt", "a") as file:
                 # Write the message content to the file
