@@ -107,8 +107,10 @@ async def on_message(message):
             image_response = requests.get(image_url, stream=True)
             if image_response.status_code == 200:
                 random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
+                image_folder = "image_folder/"
                 image_filename = f"image_{random_string}.png"
-                image_path = os.path.join("image_folder", image_filename)
+                os.makedirs(image_folder, exist_ok=True)
+                image_path = os.path.join(image_folder, image_filename)
 
                 with open(image_path, 'wb') as image_file:
                     for chunk in image_response.iter_content(8192):
