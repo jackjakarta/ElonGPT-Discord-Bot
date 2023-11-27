@@ -7,13 +7,11 @@ import os
 from decouple import config
 from utils import save_data, load_data
 
-
-# Replace with your own Discord bot token
-TOKEN = config("DISCORD_TOKEN")
-
-# Replace with your own CMC API Key
-API_URL = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest"
-API_KEY = config("CMC_PRO_API_KEY")
+# API Keys and Discord Bot Token from .env file
+DISCORD_TOKEN = config("DISCORD_TOKEN")
+OPENAI_API_KEY = config("OPENAI_API_KEY")
+CMC_API_URL = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest"
+CMC_API_KEY = config("CMC_PRO_API_KEY")
 
 client = discord.Client(intents=discord.Intents.all())
 
@@ -35,9 +33,9 @@ async def on_message(message):
     # GPT 4
     if message.content.startswith("?ask"):
         try:
-            ai = OpenAI(api_key=config("OPENAI_API_KEY"))
+            ai = OpenAI(api_key=OPENAI_API_KEY)
             gpt4_input = message.content[5:]
-            json_data = load_data("fine_tune.json")
+            json_data = load_data("completions.json")
             response = ai.chat.completions.create(
             model="gpt-4",
             messages=[
@@ -49,8 +47,8 @@ async def on_message(message):
             #embed = discord.Embed(title="ChatGPT Response", description=answer, color=0x4BA081)
             await message.channel.send(answer)
             json_data.append({"prompt": gpt4_input, "completion": answer})
-            save_data("fine_tune.json", json_data)
-            print("Prompt - Completion Pair saved to fine_tune.json file!")
+            save_data("completions.json", json_data)
+            print("Prompt - Completion Pair saved to completions.json file!")
         except Exception as e:
             embed = discord.Embed(title="Unknown Error:", description=e, color=0x4BA081)
             await message.channel.send(embed=embed)
@@ -59,9 +57,9 @@ async def on_message(message):
     # GPT 3.5 Turbo
     if message.content.startswith("?fast"):
         try:
-            ai = OpenAI(api_key=config("OPENAI_API_KEY"))
+            ai = OpenAI(api_key=OPENAI_API_KEY)
             gpt3_input = message.content[6:]
-            json_data = load_data("fine_tune.json")
+            json_data = load_data("completions.json")
             response = ai.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
@@ -73,7 +71,7 @@ async def on_message(message):
             #embed = discord.Embed(title="ChatGPT Response", description=answer, color=0x4BA081)
             await message.channel.send(answer)
             json_data.append({"prompt": gpt3_input, "completion": answer})
-            save_data("fine_tune.json", json_data)
+            save_data("completions.json", json_data)
             print("Prompt - Completion Pair saved to fine_tune.json file!") 
         except Exception as e:
             embed = discord.Embed(title="Unknown Error:", description=e, color=0x4BA081)
@@ -83,7 +81,7 @@ async def on_message(message):
     # Image Generation with DALL-E
     if message.content.startswith("?image"):
         try:
-            ai = OpenAI(api_key=config("OPENAI_API_KEY"))
+            ai = OpenAI(api_key=OPENAI_API_KEY)
             # Get the text input
             text = message.content[7:]
 
@@ -126,7 +124,7 @@ async def on_message(message):
     # Recipe Generator
     if message.content.startswith("?recipe"):
         try:
-            ai = OpenAI(api_key=config("OPENAI_API_KEY"))
+            ai = OpenAI(api_key=OPENAI_API_KEY)
             ingredients = message.content[8:]
             recipe_prompt = f"Write a recipe based on these ingredients:\n\n{ingredients}"
             response = ai.chat.completions.create(
@@ -138,8 +136,9 @@ async def on_message(message):
             )
             recipe = response.choices[0].message.content
             await message.channel.send(recipe)
+            
+            # Write the message content to a text file
             with open("recipes.txt", "a") as file:
-                # Write the message content to the file
                 file.write(f"\n{recipe}\n")
                 print("Recipe saved in recipes.txt file!")
         except Exception as e:
@@ -157,9 +156,9 @@ async def on_message(message):
         params = {
             "symbol": symbol,
             "convert": "USD",
-            "CMC_PRO_API_KEY": API_KEY
+            "CMC_PRO_API_KEY": CMC_API_KEY
         }
-        response = requests.get(API_URL, params=params)
+        response = requests.get(CMC_API_URL, params=params)
         # Check if the API request was successful
         if response.status_code == 200:
             # Parse the JSON response
@@ -221,4 +220,4 @@ async def on_message(message):
 
 
 if __name__ == "__main__":
-    client.run(TOKEN)
+    client.run(DISCORD_TOKEN)
