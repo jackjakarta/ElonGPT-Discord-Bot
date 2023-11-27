@@ -20,7 +20,7 @@ Create a virtual environment (optional but recommended).
 
 Install the required dependencies using pip3 install -r requirements.txt.
 
-Create a 'keys.py' file to store the variables for the Discord Bot Token and OpenAI and CoinMarketCap API keys.
+Setup an .env file using the template at .env.default.
 
 Run the bot using python3 main.py.
 
@@ -35,5 +35,7 @@ Run the bot using python3 main.py.
 ?image 'description' - Generate an image based on a description.
 
 ?price 'symbol' - Get the price and market cap of a cryptocurrency.
+
+?joke - Get a Chuck Norris joke using the free api. 
 
 ?poll 'question'/'option1'/'option2'/... - Create a poll with options.
