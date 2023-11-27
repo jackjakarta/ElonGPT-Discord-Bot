@@ -4,16 +4,16 @@ import requests
 import random
 import string
 import os
-from keys import OPENAI_API_KEY, DISCORD_TOKEN, CMC_PRO_API_KEY
-from functions_module import save_data, load_data
+from decouple import config
+from utils import save_data, load_data
 
 
 # Replace with your own Discord bot token
-TOKEN = DISCORD_TOKEN
+TOKEN = config("DISCORD_TOKEN")
 
 # Replace with your own CMC API Key
 API_URL = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest"
-API_KEY = CMC_PRO_API_KEY
+API_KEY = config("CMC_PRO_API_KEY")
 
 client = discord.Client(intents=discord.Intents.all())
 
@@ -35,7 +35,7 @@ async def on_message(message):
     # GPT 4
     if message.content.startswith("?ask"):
         try:
-            ai = OpenAI(api_key=OPENAI_API_KEY)
+            ai = OpenAI(api_key=config("OPENAI_API_KEY"))
             gpt4_input = message.content[5:]
             json_data = load_data("fine_tune.json")
             response = ai.chat.completions.create(
@@ -59,7 +59,7 @@ async def on_message(message):
     # GPT 3.5 Turbo
     if message.content.startswith("?fast"):
         try:
-            ai = OpenAI(api_key=OPENAI_API_KEY)
+            ai = OpenAI(api_key=config("OPENAI_API_KEY"))
             gpt3_input = message.content[6:]
             json_data = load_data("fine_tune.json")
             response = ai.chat.completions.create(
@@ -83,7 +83,7 @@ async def on_message(message):
     # Image Generation with DALL-E
     if message.content.startswith("?image"):
         try:
-            ai = OpenAI(api_key=OPENAI_API_KEY)
+            ai = OpenAI(api_key=config("OPENAI_API_KEY"))
             # Get the text input
             text = message.content[7:]
 
@@ -126,7 +126,7 @@ async def on_message(message):
     # Recipe Generator
     if message.content.startswith("?recipe"):
         try:
-            ai = OpenAI(api_key=OPENAI_API_KEY)
+            ai = OpenAI(api_key=config("OPENAI_API_KEY"))
             ingredients = message.content[8:]
             recipe_prompt = f"Write a recipe based on these ingredients:\n\n{ingredients}"
             response = ai.chat.completions.create(
