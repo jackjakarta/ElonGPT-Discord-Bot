@@ -31,7 +31,7 @@ You can also run the app straight into a docker container by using the follwing 
 Pull the image:
 
 ```bash
-docker pull jackjakarta/firstrepo
+docker pull jackjakarta/elongpt
 ```
 
 Run the container with your env variables:
