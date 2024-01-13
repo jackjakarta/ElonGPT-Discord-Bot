@@ -24,6 +24,27 @@ Setup an .env file using the template at .env.default.
 
 Run the bot using python3 main.py.
 
+# Docker Run
+
+You can also run the app straight into a docker container by using the follwing commands:
+
+Pull the image:
+
+```bash
+docker pull jackjakarta/firstrepo
+```
+
+Run the container with your env variables:
+
+```bash
+docker run -d -t -e OPENAI_API_KEY=your-api-key -e DISCORD_TOKEN=your-api-key -e CMC_PRO_API_KEY=your-api-key --name elongpt-bot elongpt
+```
+
+You can use the containers bash shell by running:
+```bash
+docker exec -it elongpt-bot bash
+```
+
 # Discord Commands
 
 ?help - Get a list of all available commands.
