@@ -45,7 +45,12 @@ docker pull jackjakarta/elongpt
 Run the container with your env variables:
 
 ```bash
-docker run -d -t -e OPENAI_API_KEY=your-api-key -e DISCORD_TOKEN=your-api-key -e CMC_PRO_API_KEY=your-api-key --name elongpt-bot elongpt
+docker run -d -t \
+-e OPENAI_API_KEY=your-api-key \
+-e DISCORD_TOKEN=your-api-key \
+-e CMC_PRO_API_KEY=your-api-key \
+--name elongpt-bot \
+jackjakarta/elongpt:latest
 ```
 
 You can use the containers bash shell by running:
