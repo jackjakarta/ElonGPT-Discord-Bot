@@ -18,11 +18,19 @@ Clone this repository to your local machine.
 
 Create a virtual environment (optional but recommended).
 
-Install the required dependencies using pip3 install -r requirements.txt.
+Install the required dependencies using: 
+
+```bash
+pip3 install -r requirements.txt.
+```
 
 Setup an .env file using the template at .env.default.
 
-Run the bot using python3 main.py.
+Run the bot using: 
+
+```bash
+python3 main.py
+```
 
 # Docker Run
 
