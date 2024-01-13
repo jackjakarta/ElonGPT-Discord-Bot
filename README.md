@@ -21,7 +21,7 @@ Create a virtual environment (optional but recommended).
 Install the required dependencies using: 
 
 ```bash
-pip3 install -r requirements.txt.
+pip3 install -r requirements.txt
 ```
 
 Setup an .env file using the template at .env.default.
