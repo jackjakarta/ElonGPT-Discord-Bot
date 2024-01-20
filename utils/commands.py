@@ -9,12 +9,9 @@ from utils.utils import save_json, load_json, create_embed
 
 
 # Constants and Configuration
-DISCORD_TOKEN = config("DISCORD_TOKEN")
 OPENAI_API_KEY = config("OPENAI_API_KEY")
 CMC_API_URL = config("CMC_API_URL")
 CMC_API_KEY = config("CMC_PRO_API_KEY")
-EVNTMNGR_API_URL = config("EVNTMNGR_API_URL")
-EVNTMNGR_API_KEY = config("EVNTMNGR_API_KEY")
 IMAGE_FOLDER = config("IMAGE_FOLDER")
 RECIPES_FILE = config("RECIPES_FILE")
 COMPLETIONS_FILE = config("COMPLETIONS_FILE")
