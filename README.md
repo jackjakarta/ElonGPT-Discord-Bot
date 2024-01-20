@@ -21,7 +21,7 @@ Use the `?ask` command to ask questions and receive responses from the advanced 
 
 ### Image Generation
 
-Create images based on descriptions by using the `?image` command, which utilizes the cutting-edge DALL-E model.
+Create images based on descriptions by using the `?image` command, which utilizes the DALL-E 3 model.
 
 ### Cryptocurrency Price
 
