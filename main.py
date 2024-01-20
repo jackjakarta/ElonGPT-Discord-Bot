@@ -45,7 +45,7 @@ async def on_message(message):
         try:
             ai = OpenAI(api_key=OPENAI_API_KEY)
             gpt4_input = message.content[5:]
-            json_data = load_json("completions.json")
+            json_data = load_json("data/completions.json")
             response = ai.chat.completions.create(
                 model="gpt-4",
                 messages=[
@@ -57,8 +57,8 @@ async def on_message(message):
             # embed = discord.Embed(title="ChatGPT Response", description=answer, color=0x4BA081)
             await message.channel.send(answer)
             json_data.append({"prompt": gpt4_input, "completion": answer})
-            save_json("completions.json", json_data)
-            print("Prompt - Completion Pair saved to completions.json file!")
+            save_json("data/completions.json", json_data)
+            print("Prompt - Completion Pair saved to data/completions.json file!")
         except Exception as e:
             embed = discord.Embed(title="Unknown Error:", description=e, color=0x4BA081)
             await message.channel.send(embed=embed)
@@ -69,7 +69,7 @@ async def on_message(message):
         try:
             ai = OpenAI(api_key=OPENAI_API_KEY)
             gpt3_input = message.content[6:]
-            json_data = load_json("completions.json")
+            json_data = load_json("data/completions.json")
             response = ai.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=[
@@ -82,7 +82,7 @@ async def on_message(message):
             # embed = discord.Embed(title="ChatGPT Response", description=answer, color=0x4BA081)
             await message.channel.send(answer)
             json_data.append({"prompt": gpt3_input, "completion": answer})
-            save_json("completions.json", json_data)
+            save_json("data/completions.json", json_data)
             print("Prompt - Completion Pair saved to fine_tune.json file!") 
         except Exception as e:
             embed = discord.Embed(title="Unknown Error:", description=e, color=0x4BA081)
