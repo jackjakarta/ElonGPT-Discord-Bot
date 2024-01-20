@@ -1,88 +1,110 @@
 # Discord Bot with AI Integration
 
-This is a Discord bot that integrates with various AI models to provide fun and useful features. It uses the OpenAI API for natural language processing tasks and image generation with DALL-E. It also interacts with the CoinMarketCap API for cryptocurrency data retrieval.
-It uses the old discord library for creating bots, so it doesn't use application commands.
- 
-# Features
+**Table of Contents**
+- [Introduction](#introduction)
+- [Features](#features)
+- [Bot Setup](#bot-setup)
+- [Docker Run](#docker-run)
+- [Discord Commands](#discord-commands)
 
-Question Answering: Ask questions using the ?ask command and receive answers from the gpt-4 model.
+## Introduction
 
-Image Generation: Generate images based on descriptions using the DALL-E model with the ?image command.
+Welcome to the Discord Bot with AI Integration! This versatile bot seamlessly integrates with a variety of AI models to offer engaging and practical features. It leverages the OpenAI API for natural language processing tasks and harnesses the power of DALL-E for image generation. Additionally, it can interact with the CoinMarketCap API to provide up-to-date cryptocurrency data. Please note that this bot uses the older Discord library for bot creation and does not employ application commands.
 
-Cryptocurrency Price: Get the price and market capitalization of a cryptocurrency using the ?price command.
+## Features
 
-Polls: Create polls with multiple options using the ?poll command.
+Explore the exciting features of this Discord bot:
 
-# Bot Setup
+### Question Answering
 
-Clone this repository to your local machine.
+Use the `?ask` command to ask questions and receive responses from the advanced gpt-4 model.
 
-Create a virtual environment (optional but recommended).
+### Image Generation
 
-Install the required dependencies using: 
+Create images based on descriptions by using the `?image` command, which utilizes the cutting-edge DALL-E model.
 
-```bash
-pip3 install -r requirements.txt
-```
+### Cryptocurrency Price
 
-Setup an .env file using the template at .env.default.
+Stay informed about cryptocurrency prices and market capitalization by executing the `?price` command.
 
-Run the bot using: 
+### Polls
 
-```bash
-python3 main.py
-```
+Engage your server members by creating polls with multiple options using the `?poll` command.
 
-# Docker Run
+## Bot Setup
 
-You can also run the app straight into a docker container by using the follwing commands:
+To set up this bot on your own server, follow these steps:
 
-Pull the image:
+1. Clone this repository to your local machine.
 
-```bash
-docker pull jackjakarta/elongpt
-```
+2. Consider creating a virtual environment (recommended but optional).
 
-Run the container with your env variables:
+3. Install the necessary dependencies by running the following command:
 
-```bash
-docker run -d -t \
--e OPENAI_API_KEY=your-api-key \
--e DISCORD_TOKEN=your-api-key \
--e CMC_PRO_API_KEY=your-api-key \
--e CMC_API_URL=https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest \
--e IMAGE_FOLDER=generated_files/images/ \
--e RECIPES_FILE=data/recipes.txt \
--e COMPLETIONS_FILE=data/completions.json \
---name elongpt-bot \
-jackjakarta/elongpt:latest
-```
+    ```bash
+    pip3 install -r requirements.txt
+    ```
 
-Each time you stop and start the container again, it will pull the latest version from GitHub:
+4. Configure your environment variables by setting up an `.env` file following the template provided at `.env.default`.
 
-```bash
-docker stop elongpt-bot
-docker start elongpt-bot
-```
+5. Start the bot by executing the following command:
 
-You can use the containers bash shell by running:
+    ```bash
+    python3 main.py
+    ```
 
-```bash
-docker exec -it elongpt-bot bash
-```
+## Docker Run
 
-# Discord Commands
+Alternatively, you can run the bot within a Docker container using the following commands:
 
-?help - Get a list of all available commands.
+1. Pull the Docker image:
 
-?ask 'question' - Ask a question and get an answer from the gpt-4 model.
+    ```bash
+    docker pull jackjakarta/elongpt
+    ```
 
-?fast 'question' - Get a quick answer using the gpt-3.5-turbo model.
+2. Run the container while supplying your environment variables:
 
-?image 'description' - Generate an image based on a description.
+    ```bash
+    docker run -d -t \
+    -e OPENAI_API_KEY=your-api-key \
+    -e DISCORD_TOKEN=your-api-key \
+    -e CMC_PRO_API_KEY=your-api-key \
+    -e CMC_API_URL=https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest \
+    -e IMAGE_FOLDER=generated_files/images/ \
+    -e RECIPES_FILE=data/recipes.txt \
+    -e COMPLETIONS_FILE=data/completions.json \
+    --name elongpt-bot \
+    jackjakarta/elongpt:latest
+    ```
 
-?price 'symbol' - Get the price and market cap of a cryptocurrency.
+3. Whenever you stop and restart the container, it will automatically fetch the latest version from GitHub:
 
-?joke - Get a Chuck Norris joke using the free api. 
+    ```bash
+    docker stop elongpt-bot
+    docker start elongpt-bot
+    ```
 
-?poll 'question'/'option1'/'option2'/... - Create a poll with options.
+4. You can access the container's bash shell with:
+
+    ```bash
+    docker exec -it elongpt-bot bash
+    ```
+
+## Discord Commands
+
+Now that your bot is up and running, here are some of the commands you can use:
+
+- `?help`: Retrieve a list of all available commands.
+
+- `?ask 'question'`: Ask a question and receive an answer from the gpt-4 model.
+
+- `?fast 'question'`: Get a quick answer using the gpt-3.5-turbo model.
+
+- `?image 'description'`: Generate an image based on a description.
+
+- `?price 'symbol'`: Fetch the price and market cap of a cryptocurrency.
+
+- `?joke`: Enjoy a Chuck Norris joke using the free API.
+
+- `?poll 'question'/'option1'/'option2'/...`: Create a poll with multiple options and engage your server members in a vote.
