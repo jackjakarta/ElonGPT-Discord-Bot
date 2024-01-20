@@ -1,6 +1,7 @@
 # Discord Bot with AI Integration
 
 This is a Discord bot that integrates with various AI models to provide fun and useful features. It uses the OpenAI API for natural language processing tasks and image generation with DALL-E. It also interacts with the CoinMarketCap API for cryptocurrency data retrieval.
+It uses the old discord library for creating bots, so it doesn't use application commands.
  
 # Features
 
@@ -57,7 +58,15 @@ docker run -d -t \
 jackjakarta/elongpt:latest
 ```
 
+Each time you stop and start the container again, it will pull the latest version from GitHub:
+
+```bash
+docker stop elongpt-bot
+docker start elongpt-bot
+```
+
 You can use the containers bash shell by running:
+
 ```bash
 docker exec -it elongpt-bot bash
 ```
