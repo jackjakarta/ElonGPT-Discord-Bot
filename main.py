@@ -1,17 +1,27 @@
-from openai import OpenAI
 import discord
-import requests
-import random
-import string
 import os
-from decouple import config
-from utils import save_data, load_data
+import random
+import requests
+import string
 
-# API Keys and Discord Bot Token from .env file
+from decouple import config
+from openai import OpenAI
+from utils.json import load_json, save_json
+
+
+# API Keys and Discord Bot Token
+
 DISCORD_TOKEN = config("DISCORD_TOKEN")
 OPENAI_API_KEY = config("OPENAI_API_KEY")
-CMC_API_URL = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest"
+
+CMC_API_URL = config("CMC_API_URL")
 CMC_API_KEY = config("CMC_PRO_API_KEY")
+
+EVNTMNGR_API_URL = config("EVNTMNGR_API_URL")
+EVNTMNGR_API_KEY = config("EVNTMNGR_API_KEY")
+
+
+# Discord Client
 
 client = discord.Client(intents=discord.Intents.all())
 
@@ -35,19 +45,19 @@ async def on_message(message):
         try:
             ai = OpenAI(api_key=OPENAI_API_KEY)
             gpt4_input = message.content[5:]
-            json_data = load_data("completions.json")
+            json_data = load_json("completions.json")
             response = ai.chat.completions.create(
-            model="gpt-4",
-            messages=[
-                {"role": "system", "content": "You are ChatGPT, a large language model trained by OpenAI. Answer as concisely as possible."},
-                {"role": "user", "content": gpt4_input},
-                ]
-            )
+                model="gpt-4",
+                messages=[
+                    {"role": "system", "content": "You are ChatGPT, a large language model trained by OpenAI. Answer as concisely as possible."},
+                    {"role": "user", "content": gpt4_input},
+                    ]
+                )
             answer = response.choices[0].message.content
-            #embed = discord.Embed(title="ChatGPT Response", description=answer, color=0x4BA081)
+            # embed = discord.Embed(title="ChatGPT Response", description=answer, color=0x4BA081)
             await message.channel.send(answer)
             json_data.append({"prompt": gpt4_input, "completion": answer})
-            save_data("completions.json", json_data)
+            save_json("completions.json", json_data)
             print("Prompt - Completion Pair saved to completions.json file!")
         except Exception as e:
             embed = discord.Embed(title="Unknown Error:", description=e, color=0x4BA081)
@@ -59,19 +69,20 @@ async def on_message(message):
         try:
             ai = OpenAI(api_key=OPENAI_API_KEY)
             gpt3_input = message.content[6:]
-            json_data = load_data("completions.json")
+            json_data = load_json("completions.json")
             response = ai.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "You are ChatGPT, a large language model trained by OpenAI. Answer as concisely as possible."},
-                {"role": "user", "content": gpt3_input},
-                ]
-            )
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": "You are ChatGPT, a large language model trained by OpenAI. Answer "
+                                                  "as concisely as possible."},
+                    {"role": "user", "content": gpt3_input},
+                    ]
+                )
             answer = response.choices[0].message.content
-            #embed = discord.Embed(title="ChatGPT Response", description=answer, color=0x4BA081)
+            # embed = discord.Embed(title="ChatGPT Response", description=answer, color=0x4BA081)
             await message.channel.send(answer)
             json_data.append({"prompt": gpt3_input, "completion": answer})
-            save_data("completions.json", json_data)
+            save_json("completions.json", json_data)
             print("Prompt - Completion Pair saved to fine_tune.json file!") 
         except Exception as e:
             embed = discord.Embed(title="Unknown Error:", description=e, color=0x4BA081)
@@ -88,12 +99,12 @@ async def on_message(message):
             # Generate an image using the Dall-E model
             img_prompt = text
             response = ai.images.generate(
-            model="dall-e-3",
-            prompt=img_prompt,
-            size="1024x1024",
-            quality="standard",
-            n=1,
-        )
+                model="dall-e-3",
+                prompt=img_prompt,
+                size="1024x1024",
+                quality="standard",
+                n=1,
+            )
             
             # Get the URL of the generated image
             image_url = response.data[0].url
@@ -128,12 +139,12 @@ async def on_message(message):
             ingredients = message.content[8:]
             recipe_prompt = f"Write a recipe based on these ingredients:\n\n{ingredients}"
             response = ai.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "You are ChefGPT, a master chef that provides the best recipes."},
-                {"role": "user", "content": recipe_prompt},
-                ]
-            )
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": "You are ChefGPT, a master chef that provides the best recipes."},
+                    {"role": "user", "content": recipe_prompt},
+                    ]
+                )
             recipe = response.choices[0].message.content
             await message.channel.send(recipe)
             
@@ -200,10 +211,27 @@ async def on_message(message):
 
             await message.channel.send(joke_format)
         except Exception as e:
-            embed = discord.Embed(title="Unknown Error:", description=e, color=0x4BA081)
+            embed = discord.Embed(title="API Call Error::", description=e, color=0x4BA081)
             await message.channel.send(embed=embed)
-            print(f"Unknown Error: {e}")
+            print(f"API Call Error: {e}")
 
+    if message.content.startswith("?events"):
+        try:
+            headers = {
+                "Authorization": f"Api-Key {EVNTMNGR_API_KEY}"
+            }
+
+            response = requests.get(EVNTMNGR_API_URL, headers=headers)
+            events = response.json()
+            events_format = [event["name"] for event in events][:5]
+
+            for x in events_format:
+                await message.channel.send(x)
+
+        except Exception as e:
+            embed = discord.Embed(title="API Call Error:", description=e, color=0x4BA081)
+            await message.channel.send(embed=embed)
+            print(f"API Call Error: {e}")
 
     # Help Command
     if message.content.startswith("?help"):

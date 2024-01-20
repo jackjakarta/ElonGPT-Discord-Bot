@@ -1,6 +1,7 @@
 import json
 
-def load_data(filename):
+
+def load_json(filename):
     try:
         with open(filename, 'r') as file:
             return json.load(file)
@@ -8,7 +9,6 @@ def load_data(filename):
         return []
 
 
-def save_data(filename, data):
+def save_json(filename, data):
     with open(filename, 'w') as file:
         json.dump(data, file, indent=4)
-
