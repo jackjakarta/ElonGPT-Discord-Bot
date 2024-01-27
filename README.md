@@ -23,6 +23,10 @@ Use the `?ask` command to ask questions and receive responses from the advanced 
 
 Create images based on descriptions by using the `?image` command, which utilizes the DALL-E 3 model.
 
+### Image Classification
+
+Classifies images by using the `?classify` command, using the new GPT-4 vision model.
+
 ### Cryptocurrency Price
 
 Stay informed about cryptocurrency prices and market capitalization by executing the `?price` command.
@@ -102,6 +106,8 @@ Now that your bot is up and running, here are some of the commands you can use:
 - `?fast 'question'`: Get a quick answer using the gpt-3.5-turbo model.
 
 - `?image 'description'`: Generate an image based on a description.
+
+- `?classify 'image url'`: Classifies images and describes them
 
 - `?price 'symbol'`: Fetch the price and market cap of a cryptocurrency.
 

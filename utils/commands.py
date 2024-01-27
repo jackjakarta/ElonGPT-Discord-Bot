@@ -141,6 +141,31 @@ async def price_command(message):
         await message.channel.send(f"Could not get price and market capitalization for {symbol}")
 
 
+async def classify_command(message):
+    input_url = message.content[10:]
+    ai = OpenAI(api_key=OPENAI_API_KEY)
+
+    response = ai.chat.completions.create(
+        model="gpt-4-vision-preview",
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": "What’s in this image? Answer in one paragraph maximum."},
+                    {
+                        "type": "image_url",
+                        "image_url": input_url,
+                    },
+                ],
+            }
+        ],
+        max_tokens=300,
+    )
+
+    answer = response.choices[0].message.content
+    await message.channel.send(answer)
+
+
 async def poll_command(message):
     # Get the poll question and answer options
     poll_data = message.content[6:].split('/')
@@ -175,6 +200,7 @@ async def help_command(message):
     help_text = "?ask - insert a question and get an answer from Elon (gpt-4) \n" \
                 "?fast - insert a question and get an answer in fast mode (gpt-3.5) \n" \
                 "?image - generate an image based on a description \n" \
+                "?image - classify an image based on an url \n" \
                 "?recipe - insert ingredients and get recipe \n" \
                 "?price - insert cryptocurrency symbol to get price and market cap \n" \
                 "?poll - example: ?poll what color?/blue/red/yellow \n" \

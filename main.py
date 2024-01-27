@@ -2,7 +2,7 @@ import discord
 
 from decouple import config
 from utils.commands import ask_command, fast_command, image_command, recipe_command
-from utils.commands import price_command, joke_command, poll_command, help_command
+from utils.commands import price_command, joke_command, poll_command, help_command, classify_command
 
 DISCORD_TOKEN = config("DISCORD_TOKEN")
 
@@ -31,6 +31,8 @@ async def on_message(message):
         await image_command(message)
     elif message.content.startswith("?recipe"):
         await recipe_command(message)
+    elif message.content.startswith("?classify"):
+        await classify_command(message)
     elif message.content.startswith("?price"):
         await price_command(message)
     elif message.content.startswith("?poll"):
