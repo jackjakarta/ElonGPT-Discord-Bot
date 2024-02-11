@@ -200,7 +200,7 @@ async def help_command(message):
     help_text = "?ask - insert a question and get an answer from Elon (gpt-4) \n" \
                 "?fast - insert a question and get an answer in fast mode (gpt-3.5) \n" \
                 "?image - generate an image based on a description \n" \
-                "?image - classify an image based on an url \n" \
+                "?classify - classify an image based on an url \n" \
                 "?recipe - insert ingredients and get recipe \n" \
                 "?price - insert cryptocurrency symbol to get price and market cap \n" \
                 "?poll - example: ?poll what color?/blue/red/yellow \n" \
