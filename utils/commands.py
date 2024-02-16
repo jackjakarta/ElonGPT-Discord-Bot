@@ -5,7 +5,7 @@ import requests
 
 from openai import OpenAI
 from decouple import config
-from utils.utils import save_json, load_json, create_embed
+from utils import save_json, load_json, create_embed
 
 
 # Constants and Configuration
@@ -18,74 +18,89 @@ COMPLETIONS_FILE = config("COMPLETIONS_FILE")
 
 
 async def ask_command(message):
-    ai = OpenAI(api_key=OPENAI_API_KEY)
-    prompt = message.content[5:]
-    json_data = load_json(COMPLETIONS_FILE)
-    response = ai.chat.completions.create(
-        model="gpt-4-1106-preview",
-        messages=[
-            {"role": "system", "content": "You are ChatGPT, a large language model trained by OpenAI."
-                                          "Answer as concisely as possible."},
-            {"role": "user", "content": prompt},
-        ]
-    )
-    answer = response.choices[0].message.content
-    await message.channel.send(answer)
-    json_data.append({"prompt": prompt, "completion": answer})
-    save_json(COMPLETIONS_FILE, json_data)
-    print("Prompt - Completion Pair saved to completions.json file!")
+    try:
+        ai = OpenAI(api_key=OPENAI_API_KEY)
+        prompt = message.content[5:]
+        json_data = load_json(COMPLETIONS_FILE)
+        response = ai.chat.completions.create(
+            model="gpt-4-turbo-preview",
+            messages=[
+                {"role": "system", "content": "You are ChatGPT, a large language model trained by OpenAI."
+                                              "Answer as concisely as possible."},
+                {"role": "user", "content": prompt},
+            ]
+        )
+        answer = response.choices[0].message.content
+        await message.channel.send(answer)
+        json_data.append({"prompt": prompt, "completion": answer})
+        save_json(COMPLETIONS_FILE, json_data)
+        print("Prompt - Completion Pair saved to completions.json file!")
+    except Exception as e:
+        embed = create_embed(title="Unknown Error:", description=e)
+        await message.channel.send(embed=embed)
+        print(f"Unknown Error: {e}")
 
 
 async def fast_command(message):
-    ai = OpenAI(api_key=OPENAI_API_KEY)
-    prompt = message.content[5:]
-    json_data = load_json(COMPLETIONS_FILE)
-    response = ai.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": "You are ChatGPT, a large language model trained by OpenAI."
-                                          "Answer as concisely as possible."},
-            {"role": "user", "content": prompt},
-        ]
-    )
-    answer = response.choices[0].message.content
-    await message.channel.send(answer)
-    json_data.append({"prompt": prompt, "completion": answer})
-    save_json(COMPLETIONS_FILE, json_data)
-    print("Prompt - Completion Pair saved to completions.json file!")
+    try:
+        ai = OpenAI(api_key=OPENAI_API_KEY)
+        prompt = message.content[5:]
+        json_data = load_json(COMPLETIONS_FILE)
+        response = ai.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are ChatGPT, a large language model trained by OpenAI."
+                                              "Answer as concisely as possible."},
+                {"role": "user", "content": prompt},
+            ]
+        )
+        answer = response.choices[0].message.content
+        await message.channel.send(answer)
+        json_data.append({"prompt": prompt, "completion": answer})
+        save_json(COMPLETIONS_FILE, json_data)
+        print("Prompt - Completion Pair saved to completions.json file!")
+    except Exception as e:
+        embed = create_embed(title="Unknown Error:", description=e)
+        await message.channel.send(embed=embed)
+        print(f"Unknown Error: {e}")
 
 
 async def image_command(message):
-    ai = OpenAI(api_key=OPENAI_API_KEY)
-    prompt = message.content[7:]
+    try:
+        ai = OpenAI(api_key=OPENAI_API_KEY)
+        prompt = message.content[7:]
 
-    response = ai.images.generate(
-        model="dall-e-3",
-        prompt=prompt,
-        size="1024x1024",
-        quality="standard",
-        n=1,
-    )
+        response = ai.images.generate(
+            model="dall-e-3",
+            prompt=prompt,
+            size="1024x1024",
+            quality="standard",
+            n=1,
+        )
 
-    image_url = response.data[0].url
+        image_url = response.data[0].url
 
-    await message.channel.send(image_url)
+        await message.channel.send(image_url)
 
-    # Save Image
-    img_response = requests.get(image_url, stream=True)
-    if img_response.status_code == 200:
-        random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
-        image_folder = IMAGE_FOLDER
-        image_filename = f"image_{random_string}.png"
-        os.makedirs(image_folder, exist_ok=True)
-        image_path = os.path.join(image_folder, image_filename)
+        # Save Image
+        img_response = requests.get(image_url, stream=True)
+        if img_response.status_code == 200:
+            random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
+            image_folder = IMAGE_FOLDER
+            image_filename = f"image_{random_string}.png"
+            os.makedirs(image_folder, exist_ok=True)
+            image_path = os.path.join(image_folder, image_filename)
 
-        with open(image_path, "wb") as image_file:
-            for chunk in img_response.iter_content(8192):
-                image_file.write(chunk)
-        print(f"Image for prompt: '{prompt}' saved at: {image_path}.")
-    else:
-        print("Failed to saved image!")
+            with open(image_path, "wb") as image_file:
+                for chunk in img_response.iter_content(8192):
+                    image_file.write(chunk)
+            print(f"Image for prompt: '{prompt}' saved at: {image_path}.")
+        else:
+            print("Failed to saved image!")
+    except Exception as e:
+        embed = create_embed(title="Unknown Error:", description=e)
+        await message.channel.send(embed=embed)
+        print(f"Unknown Error: {e}")
 
 
 async def recipe_command(message):
@@ -105,7 +120,7 @@ async def recipe_command(message):
 
         # Write the message content to a text file
         with open(RECIPES_FILE, "a") as file:
-            file.write(f"\n{recipe}\n")
+            file.write(f"\n{recipe}\n\n")
             print(f"Recipe saved in {RECIPES_FILE} file!")
     except Exception as e:
         embed = create_embed(title="Unknown Error:", description=e)
@@ -142,28 +157,33 @@ async def price_command(message):
 
 
 async def classify_command(message):
-    input_url = message.content[10:]
-    ai = OpenAI(api_key=OPENAI_API_KEY)
+    try:
+        input_url = message.content[10:]
+        ai = OpenAI(api_key=OPENAI_API_KEY)
 
-    response = ai.chat.completions.create(
-        model="gpt-4-vision-preview",
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    {"type": "text", "text": "What’s in this image? Answer in one paragraph maximum."},
-                    {
-                        "type": "image_url",
-                        "image_url": input_url,
-                    },
-                ],
-            }
-        ],
-        max_tokens=300,
-    )
+        response = ai.chat.completions.create(
+            model="gpt-4-vision-preview",
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": "What’s in this image? Answer in one paragraph maximum."},
+                        {
+                            "type": "image_url",
+                            "image_url": input_url,
+                        },
+                    ],
+                }
+            ],
+            max_tokens=300,
+        )
 
-    answer = response.choices[0].message.content
-    await message.channel.send(answer)
+        answer = response.choices[0].message.content
+        await message.channel.send(answer)
+    except Exception as e:
+        embed = create_embed(title="Unknown Error:", description=e)
+        await message.channel.send(embed=embed)
+        print(f"Unknown Error: {e}")
 
 
 async def poll_command(message):
