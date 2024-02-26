@@ -80,10 +80,6 @@ Alternatively, you can run the bot within a Docker container using the following
     -e OPENAI_API_KEY=your-api-key \
     -e DISCORD_TOKEN=your-api-key \
     -e CMC_PRO_API_KEY=your-api-key \
-    -e CMC_API_URL=https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest \
-    -e IMAGE_FOLDER=generated_files/images/ \
-    -e RECIPES_FILE=data/recipes.txt \
-    -e COMPLETIONS_FILE=data/completions.json \
     --name elongpt-bot \
     jackjakarta/elongpt:latest
     ```
