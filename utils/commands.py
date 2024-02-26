@@ -10,11 +10,15 @@ from utils import save_json, load_json, create_embed
 
 # Constants and Configuration
 OPENAI_API_KEY = config("OPENAI_API_KEY")
-CMC_API_URL = config("CMC_API_URL")
 CMC_API_KEY = config("CMC_PRO_API_KEY")
-IMAGE_FOLDER = config("IMAGE_FOLDER")
-RECIPES_FILE = config("RECIPES_FILE")
-COMPLETIONS_FILE = config("COMPLETIONS_FILE")
+CMC_API_URL = config("CMC_API_URL", default="https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest")
+IMAGE_FOLDER = config("IMAGE_FOLDER", default="generated_images")
+DATA_FOLDER = config("DATA_FOLDER", default="data")
+os.makedirs(DATA_FOLDER, exist_ok=True)
+
+RECIPES_FILE = os.path.join(DATA_FOLDER, "recipes.txt")
+COMPLETIONS_FILE = os.path.join(DATA_FOLDER, "completions.json")
+CLASSIFICATIONS_FILE = os.path.join(DATA_FOLDER, "classifications.json")
 
 
 async def ask_command(message):
@@ -160,6 +164,7 @@ async def classify_command(message):
     try:
         input_url = message.content[10:]
         ai = OpenAI(api_key=OPENAI_API_KEY)
+        json_data = load_json(CLASSIFICATIONS_FILE)
 
         response = ai.chat.completions.create(
             model="gpt-4-vision-preview",
@@ -179,6 +184,13 @@ async def classify_command(message):
         )
 
         answer = response.choices[0].message.content
+        classification = {
+            "url": input_url,
+            "classification": answer
+        }
+        json_data.append(classification)
+        save_json(CLASSIFICATIONS_FILE, json_data)
+
         await message.channel.send(answer)
     except Exception as e:
         embed = create_embed(title="Unknown Error:", description=e)

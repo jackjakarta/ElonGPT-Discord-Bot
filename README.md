@@ -57,6 +57,12 @@ To set up this bot on your own server, follow these steps:
     python3 main.py
     ```
 
+6. Start the bot in the background by executing the start script at `start_bot.sh`.
+
+   ```bash
+   ./start_bot.sh
+   ```
+
 ## Docker Run
 
 Alternatively, you can run the bot within a Docker container using the following commands:
