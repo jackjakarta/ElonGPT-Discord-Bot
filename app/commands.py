@@ -15,7 +15,7 @@ async def ask_command(message):
     await message.channel.send(f"***Elon is cooking for {message.author.name}***")
 
     try:
-        ai = ChatGPT(model="gpt-4")
+        ai = ChatGPT(model="gpt-4-turbo-preview")
         prompt = message.content[5:]
         answer = ai.ask(prompt)
 
