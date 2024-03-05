@@ -13,3 +13,6 @@ main_bk.py
 image_folder
 .idea/
 data/
+generated_images/
+tools/
+*.log

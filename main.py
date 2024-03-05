@@ -1,10 +1,8 @@
 import discord
 
-from decouple import config
-from utils.commands import ask_command, fast_command, image_command, recipe_command
-from utils.commands import price_command, joke_command, poll_command, help_command, classify_command
-
-DISCORD_TOKEN = config("DISCORD_TOKEN")
+from app.commands import ask_command, fast_command, imagine_command, recipe_command
+from app.commands import price_command, joke_command, poll_command, help_command, classify_command
+from utils.settings import DISCORD_TOKEN
 
 client = discord.Client(intents=discord.Intents.all())
 
@@ -28,7 +26,7 @@ async def on_message(message):
     elif message.content.startswith("?fast"):
         await fast_command(message)
     elif message.content.startswith("?image"):
-        await image_command(message)
+        await imagine_command(message)
     elif message.content.startswith("?recipe"):
         await recipe_command(message)
     elif message.content.startswith("?classify"):
@@ -41,6 +39,7 @@ async def on_message(message):
         await joke_command(message)
     elif message.content.startswith("?help"):
         await help_command(message)
+
 
 if __name__ == "__main__":
     client.run(DISCORD_TOKEN)
