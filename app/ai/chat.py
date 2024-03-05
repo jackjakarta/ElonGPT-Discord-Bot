@@ -28,7 +28,11 @@ class ChatGPT:
                 {"role": "user", "content": self.prompt}
             )
 
-        self.completion = self.client.chat.completions.create(model=self.model, messages=self.messages)
+        self.completion = self.client.chat.completions.create(
+            model=self.model,
+            messages=self.messages,
+            max_tokens=400
+        )
         self.messages.append({"role": "assistant", "content": str(self.completion.choices[0].message.content)})
 
         return self.completion.choices[0].message.content
