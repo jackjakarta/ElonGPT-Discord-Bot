@@ -22,6 +22,7 @@ RUN echo '#!/bin/bash' > /entrypoint.sh && \
     echo 'cd /root/ElonGPT-Discord-Bot/' >> /entrypoint.sh && \
     echo 'git pull' >> /entrypoint.sh && \
     echo 'source env/bin/activate' >> /entrypoint.sh && \
+    echo 'pip3 install --upgrade -r requirements.txt' >> /entrypoint.sh && \
     echo 'nohup python3 main.py > activity.log 2>&1 &' >> /entrypoint.sh && \
     echo 'trap "kill $TAIL_PID" EXIT' >> /entrypoint.sh && \
     echo 'wait' >> /entrypoint.sh && \
