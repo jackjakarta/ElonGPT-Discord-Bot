@@ -1,3 +1,5 @@
+import asyncio
+
 import requests
 
 from app.ai.chat import ChatGPT, ImageClassify
@@ -9,18 +11,25 @@ from utils.settings import CMC_API_KEY, CMC_API_URL
 
 # Text Generation Commands
 async def ask_command(message):
-    await message.channel.send("***Elon is cooking...***")
+    await asyncio.sleep(1)
+    await message.channel.send(f"***Elon is cooking for {message.author.name}***")
 
     try:
-        ai = ChatGPT(model="gpt-4-turbo-preview")
+        ai = ChatGPT(model="gpt-4")
         prompt = message.content[5:]
         answer = ai.ask(prompt)
 
-        await message.channel.send(answer)
+        await message.channel.send(f"***Answer for {message.author.name}:***\n\n{answer}")
 
         # Save to JSON
         json_data = load_json(COMPLETIONS_FILE)
-        json_data.append({"prompt": prompt, "completion": answer})
+        json_data.append(
+            {
+                "user": message.author.name,
+                "prompt": prompt,
+                "completion": answer,
+            }
+        )
         save_json(COMPLETIONS_FILE, json_data)
         print("Prompt - Completion Pair saved to completions.json file!")
 
@@ -31,18 +40,25 @@ async def ask_command(message):
 
 
 async def fast_command(message):
-    await message.channel.send("***Elon is cooking...***")
+    await asyncio.sleep(1)
+    await message.channel.send(f"***Elon is cooking for {message.author.name}***")
 
     try:
         ai = ChatGPT()
         prompt = message.content[6:]
         answer = ai.ask(prompt)
 
-        await message.channel.send(answer)
+        await message.channel.send(f"***Answer for {message.author.name}:***\n\n{answer}")
 
         # Save to JSON
         json_data = load_json(COMPLETIONS_FILE)
-        json_data.append({"prompt": prompt, "completion": answer})
+        json_data.append(
+            {
+                "user": message.author.name,
+                "prompt": prompt,
+                "completion": answer,
+            }
+        )
         save_json(COMPLETIONS_FILE, json_data)
         print("Prompt - Completion Pair saved to completions.json file!")
 
@@ -53,7 +69,8 @@ async def fast_command(message):
 
 
 async def recipe_command(message):
-    await message.channel.send("***Elon is cooking...***")
+    await asyncio.sleep(1)
+    await message.channel.send(f"***Elon is cooking for {message.author.name}***")
 
     try:
         ingredients = message.content[8:]
@@ -62,11 +79,17 @@ async def recipe_command(message):
         ai = ChatGPT(model="gpt-4-turbo-preview")
         recipe = ai.ask(prompt)
 
-        await message.channel.send(recipe)
+        await message.channel.send(f"***Recipe for {message.author.name}:***\n\n{recipe}")
 
         # Save to JSON
         recipes_data = load_json(RECIPES_FILE)
-        recipes_data.append({ingredients: recipe})
+        recipes_data.append(
+            {
+                "user": message.author.name,
+                "ingredients": ingredients,
+                "recipe": recipe,
+            }
+        )
         save_json(RECIPES_FILE, recipes_data)
 
     except Exception as e:
@@ -77,7 +100,8 @@ async def recipe_command(message):
 
 # Image Commands
 async def imagine_command(message):
-    await message.channel.send("***Elon is cooking...***")
+    await asyncio.sleep(1)
+    await message.channel.send(f"***Elon is cooking for {message.author.name}***")
 
     try:
         ai = ImageDallE()
@@ -94,7 +118,8 @@ async def imagine_command(message):
 
 
 async def classify_command(message):
-    await message.channel.send("***Elon is cooking...***")
+    await asyncio.sleep(1)
+    await message.channel.send(f"***Elon is cooking for {message.author.name}***")
 
     try:
         ai = ImageClassify()
@@ -105,8 +130,9 @@ async def classify_command(message):
 
         # Save to JSON
         classification = {
+            "user": message.author.name,
             "url": input_url,
-            "classification": answer
+            "classification": answer,
         }
 
         json_data = load_json(CLASSIFICATIONS_FILE)
@@ -160,6 +186,9 @@ async def joke_command(message):
 
 # Own Commands
 async def poll_command(message):
+    await asyncio.sleep(1)
+    await message.channel.send(f"***Creating poll for {message.author.name}***")
+
     # Get the poll question and answer options
     poll_data = message.content[6:].split('/')
     question = poll_data[0].strip()
