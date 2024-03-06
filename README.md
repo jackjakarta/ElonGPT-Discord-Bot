@@ -57,7 +57,7 @@ To set up this bot on your own server, follow these steps:
     python3 main.py
     ```
 
-6. Start the bot in the background by executing the start script at `start_bot.sh`.
+6. Or, start the bot in the background by executing the start script labeled `start_bot.sh`.
 
    ```bash
    ./start_bot.sh
@@ -65,37 +65,46 @@ To set up this bot on your own server, follow these steps:
 
 ## Docker Run
 
-Alternatively, you can run the bot within a Docker container using the following commands:
+Alternatively, you can run the bot within a Docker container by pulling the latest image from the registry **or** by building your own image using the `Dockerfile`.
 
-1. Pull the Docker image:
+### Get image
 
-    ```bash
-    docker pull jackjakarta/elongpt
-    ```
+Pull the image from the registry:
 
-2. Run the container while supplying your environment variables:
+ ```bash
+ docker pull jackjakarta/elongpt:latest
+ ```
 
-    ```bash
-    docker run -d -t \
-    -e OPENAI_API_KEY=your-api-key \
-    -e DISCORD_TOKEN=your-api-key \
-    -e CMC_PRO_API_KEY=your-api-key \
-    --name elongpt-bot \
-    jackjakarta/elongpt:latest
-    ```
+Build your own image using the `Dockerfile` (you can use a different image name):
+```bash
+docker build -t jackjakarta/elongpt:latest .
+```
 
-3. Whenever you stop and restart the container, it will automatically fetch the latest version from GitHub:
+### Run container
 
-    ```bash
-    docker stop elongpt-bot
-    docker start elongpt-bot
-    ```
+Run the container while supplying your environment variables:
 
-4. You can access the container's bash shell with:
+ ```bash
+ docker run -d -t \
+ -e OPENAI_API_KEY=your-api-key \
+ -e DISCORD_TOKEN=your-api-key \
+ -e CMC_PRO_API_KEY=your-api-key \
+ --name elongpt-bot \
+ jackjakarta/elongpt:latest
+ ```
 
-    ```bash
-    docker exec -it elongpt-bot bash
-    ```
+Whenever you stop and restart the container, it will automatically fetch the latest version from GitHub:
+
+ ```bash
+ docker stop elongpt-bot
+ docker start elongpt-bot
+ ```
+
+You can access the container's bash shell with:
+
+ ```bash
+docker exec -it elongpt-bot bash
+ ```
 
 ## Discord Commands
 
