@@ -1,5 +1,3 @@
-import asyncio
-
 import requests
 
 from app.ai.chat import ChatGPT, ImageClassify
@@ -121,7 +119,7 @@ async def classify_command(message):
         input_url = message.content[10:]
         answer = ai.interpret_image_url(input_url)
 
-        await message.channel.send(answer)
+        await message.channel.send(f"***Image Classification for {message.author.name}:***\n\n{answer}")
 
         # Save to JSON
         classification = {
