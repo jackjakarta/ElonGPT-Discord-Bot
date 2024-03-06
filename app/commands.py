@@ -11,7 +11,6 @@ from utils.settings import CMC_API_KEY, CMC_API_URL
 
 # Text Generation Commands
 async def ask_command(message):
-    await asyncio.sleep(1)
     await message.channel.send(f"***Elon is cooking for {message.author.name}***")
 
     try:
@@ -40,7 +39,6 @@ async def ask_command(message):
 
 
 async def fast_command(message):
-    await asyncio.sleep(1)
     await message.channel.send(f"***Elon is cooking for {message.author.name}***")
 
     try:
@@ -69,7 +67,6 @@ async def fast_command(message):
 
 
 async def recipe_command(message):
-    await asyncio.sleep(1)
     await message.channel.send(f"***Elon is cooking for {message.author.name}***")
 
     try:
@@ -100,7 +97,6 @@ async def recipe_command(message):
 
 # Image Commands
 async def imagine_command(message):
-    await asyncio.sleep(1)
     await message.channel.send(f"***Elon is cooking for {message.author.name}***")
 
     try:
@@ -118,7 +114,6 @@ async def imagine_command(message):
 
 
 async def classify_command(message):
-    await asyncio.sleep(1)
     await message.channel.send(f"***Elon is cooking for {message.author.name}***")
 
     try:
@@ -199,7 +194,6 @@ async def joke_command(message):
 
 # Own Commands
 async def poll_command(message):
-    await asyncio.sleep(1)
     await message.channel.send(f"***Creating poll for {message.author.name}***")
 
     # Get the poll question and answer options
