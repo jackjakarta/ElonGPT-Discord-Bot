@@ -221,6 +221,7 @@ async def help_command(message):
                 "?image - generate an image based on a description \n" \
                 "?classify - classify an image based on an url \n" \
                 "?price - insert cryptocurrency symbol to get price and market cap \n" \
+                "?joke - insert category to get chuck norris joke \n" \
                 "?poll - example: ?poll what color?/blue/red/yellow \n" \
                 "?help - list of all commands \n"
 
