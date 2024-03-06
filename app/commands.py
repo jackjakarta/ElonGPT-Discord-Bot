@@ -171,17 +171,30 @@ async def price_command(message):
 
 
 async def joke_command(message):
-    try:
-        joke_url = "https://api.chucknorris.io/jokes/random?category=science"
-        api_response = requests.get(joke_url)
-        joke = api_response.json()
-        joke_format = joke["value"]
+    categories_url = "https://api.chucknorris.io/jokes/categories"
+    get_categories = requests.get(categories_url)
+    categories = get_categories.json()
+    category = message.content[6:]
 
-        await message.channel.send(joke_format)
-    except Exception as e:
-        embed = create_embed(title="API Call Error:", description=e)
-        await message.channel.send(embed=embed)
-        print(f"API Call Error: {e}")
+    if category not in categories:
+        await message.channel.send(f"**Available categories:** {categories}")
+    else:
+        try:
+            joke_url = f"https://api.chucknorris.io/jokes/random?category={category}"
+            api_response = requests.get(joke_url)
+
+            if api_response.status_code == 200:
+                joke = api_response.json()
+                joke_format = joke["value"]
+                await message.channel.send(joke_format)
+            else:
+                embed = create_embed(title="API Call Failed:", description="Could not retrieve joke from Chuck Norris "
+                                                                           "API.")
+                await message.channel.send(embed=embed)
+        except Exception as e:
+            embed = create_embed(title="API Call Error:", description=e)
+            await message.channel.send(embed=embed)
+            print(f"API Call Error: {e}")
 
 
 # Own Commands
