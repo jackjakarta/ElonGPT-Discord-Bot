@@ -1,24 +1,24 @@
+import os
+
 from openai import OpenAI
 
-from utils.settings import OPENAI_API_KEY
+from utils import load_json_chat, save_json
+from utils.settings import OPENAI_API_KEY, CHATS_FOLDER
 
 
 class ChatGPT:
     """ChatGPT Class"""
 
-    def __init__(self, model="gpt-3.5-turbo"):
+    def __init__(self, user_name=None, model="gpt-3.5-turbo"):
         self.client = OpenAI(api_key=OPENAI_API_KEY)
         self.model = model
-
-        self.messages = [
-            {
-                "role": "system",
-                "content": "You are ChatGPT, a large language model trained by OpenAI. Answer as concisely as "
-                           "possible."
-            }
-        ]
         self.prompt = None
         self.completion = None
+
+        self.chats_dir = CHATS_FOLDER
+        self.chat_file = f"chat_{user_name}.json"
+
+        self.messages = load_json_chat(os.path.join(self.chats_dir, self.chat_file))
 
     def ask(self, prompt):
         self.prompt = prompt
@@ -37,8 +37,21 @@ class ChatGPT:
 
         return self.completion.choices[0].message.content
 
+    def save_chat(self):
+        json_data = self.messages
+        file_path = os.path.join(self.chats_dir, self.chat_file)
+        save_json(file_path, json_data)
+
+    def reset_chat(self):
+        self.messages.append(
+            {
+                "role": "user",
+                "content": "Clear the chat and start a new session. Forget everything we talked about before."
+            }
+        )
+
     def set_system_message(self, system_prompt):
-        self.messages = [{"role": "system", "content": system_prompt}]
+        self.messages.append({"role": "system", "content": system_prompt})
 
     def get_models(self):
         models_list = self.client.models.list().data
