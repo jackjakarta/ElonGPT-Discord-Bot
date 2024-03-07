@@ -7,18 +7,34 @@ from datetime import datetime, timezone, timedelta
 from discord import Embed
 
 
-def load_json(filename: str):
+def load_json(filename):
     try:
-        if isinstance(filename, str):
-            with open(filename, 'r') as file:
-                return json.load(file)
-        else:
-            raise ValueError("JSON file path must be a string!")
+        with open(filename, 'r') as file:
+            return json.load(file)
     except ValueError as e:
         print(f"Error: {e}")
     except FileNotFoundError:
         with open(filename, 'w') as file:
             json.dump([], file)
+        return []
+
+
+def load_json_chat(filename):
+    try:
+        with open(filename, 'r') as file:
+            return json.load(file)
+    except ValueError as e:
+        print(f"Error: {e}")
+    except FileNotFoundError:
+        with open(filename, 'w') as file:
+            messages = [
+                {
+                    "role": "system",
+                    "content": "You are ChatGPT, a large language model trained by OpenAI. Answer as concisely as "
+                               "possible."
+                }
+            ]
+            json.dump(messages, file)
         return []
 
 

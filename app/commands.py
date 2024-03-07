@@ -1,3 +1,5 @@
+from random import choice
+
 import requests
 
 from app.ai.chat import ChatGPT, ImageClassify
@@ -86,6 +88,35 @@ async def recipe_command(message):
             }
         )
         save_json(RECIPES_FILE, recipes_data)
+
+    except Exception as e:
+        embed = create_embed(title="Unknown Error:", description=e)
+        await message.channel.send(embed=embed)
+        print(f"Unknown Error: {e}")
+
+
+async def chat_command(message):
+    try:
+        prompt = message.content[6:]
+        ai = ChatGPT(user_name=message.author.name)
+
+        if prompt and prompt != "clear":
+            await message.author.send(ai.ask(prompt))
+            ai.save_chat()
+
+        elif prompt == "clear":
+            ai.reset_chat()
+            ai.save_chat()
+            await message.author.send("***Chat reset successfully!***")
+
+        else:
+            responses = [
+                f"Hello {message.author.name}, use ***?chat your question here*** to chat with the bot or  "
+                "***?chat reset*** to reset chat. Use ***?help*** to see all commands.",
+                # Add more responses here
+            ]
+            await message.channel.send("***Check your DMs***")
+            await message.author.send(choice(responses))
 
     except Exception as e:
         embed = create_embed(title="Unknown Error:", description=e)
@@ -215,6 +246,7 @@ async def poll_command(message):
 async def help_command(message):
     help_text = "?ask - insert a question and get an answer from Elon (gpt-4) \n" \
                 "?fast - insert a question and get an answer in fast mode (gpt-3.5) \n" \
+                "?chat - use '?chat' to open new chat session and then use ?chat 'prompt' to chat with Elon \n" \
                 "?recipe - insert ingredients and get recipe \n" \
                 "?image - generate an image based on a description \n" \
                 "?classify - classify an image based on an url \n" \
