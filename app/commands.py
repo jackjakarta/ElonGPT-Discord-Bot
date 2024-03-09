@@ -195,12 +195,16 @@ async def price_command(message):
 
 
 async def joke_command(message):
-    categories_url = "https://api.chucknorris.io/jokes/categories"
-    get_categories = requests.get(categories_url)
-    categories = get_categories.json()
     category = message.content[6:]
 
-    if category not in categories:
+    # Get and format joke categories
+    categories_url = "https://api.chucknorris.io/jokes/categories"
+    get_categories = requests.get(categories_url)
+    get_categories_list = get_categories.json()
+    categories = ", ".join(get_categories_list)
+
+    # Check if the category exists else call the api
+    if category not in get_categories_list:
         await message.channel.send(f"**Available categories:** {categories}")
     else:
         try:
@@ -244,16 +248,16 @@ async def poll_command(message):
 
 
 async def help_command(message):
-    help_text = "?ask - insert a question and get an answer from Elon (gpt-4) \n" \
-                "?fast - insert a question and get an answer in fast mode (gpt-3.5) \n" \
-                "?chat - use '?chat' to open new chat session and then use ?chat 'prompt' to chat with Elon \n" \
-                "?recipe - insert ingredients and get recipe \n" \
-                "?image - generate an image based on a description \n" \
-                "?classify - classify an image based on an url \n" \
-                "?price - insert cryptocurrency symbol to get price and market cap \n" \
-                "?joke - insert category to get chuck norris joke \n" \
-                "?poll - example: ?poll what color?/blue/red/yellow \n" \
-                "?help - list of all commands \n"
+    help_text = "***?ask*** - insert a question and get an answer from Elon (gpt-4) \n\n" \
+                "***?fast*** - insert a question and get an answer in fast mode (gpt-3.5) \n\n" \
+                "***?chat*** - open chat session and then use ?chat 'prompt' to chat with Elon \n\n" \
+                "***?recipe*** - insert ingredients and get a recipe \n\n" \
+                "***?image*** - insert prompt to generate an image based on a description \n\n" \
+                "***?classify*** - insert image url to generate an image description \n\n" \
+                "***?price*** - insert cryptocurrency symbol to get price and market cap \n\n" \
+                "***?joke*** - insert category to get chuck norris joke \n\n" \
+                "***?poll*** - example: ?poll what color?/blue/red/yellow \n\n" \
+                "***?help*** - list of all commands \n"
 
     embed = create_embed(title="list of commands:", description=help_text)
     await message.channel.send(embed=embed)
