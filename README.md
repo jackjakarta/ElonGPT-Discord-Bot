@@ -112,16 +112,26 @@ Now that your bot is up and running, here are some of the commands you can use:
 
 - `?help`: Retrieve a list of all available commands.
 
+
 - `?ask 'question'`: Ask a question and receive an answer from the gpt-4 model.
+
 
 - `?fast 'question'`: Get a quick answer using the gpt-3.5-turbo model.
 
+
+- `?chat`: open chat session in DMs and then use `?chat 'prompt'` to chat with the bot.
+
+
 - `?image 'description'`: Generate an image based on a description.
+
 
 - `?classify 'image url'`: Classifies images and describes them
 
+
 - `?price 'symbol'`: Fetch the price and market cap of a cryptocurrency.
 
+
 - `?joke`: Enjoy a Chuck Norris joke using the free API.
+
 
 - `?poll 'question'/'option1'/'option2'/...`: Create a poll with multiple options and engage your server members in a vote.
