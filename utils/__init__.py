@@ -5,6 +5,9 @@ import time
 from datetime import datetime, timezone, timedelta
 
 from discord import Embed
+from openai import OpenAI
+
+from .settings import OPENAI_API_KEY
 
 
 def load_json(filename):
@@ -46,6 +49,17 @@ def save_json(filename, data):
 def create_embed(title, description, color=0x4BA081):
     """Create a Discord embed."""
     return Embed(title=title, description=description, color=color)
+
+
+def check_moderate(input_text: str) -> bool:
+    client = OpenAI(api_key=OPENAI_API_KEY)
+    response = client.moderations.create(input=input_text)
+    categories_object = response.results[0].categories
+
+    if any(getattr(categories_object, attr) for attr in categories_object.__dict__):
+        return True
+    else:
+        return False
 
 
 class RandomGenerator:

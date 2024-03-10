@@ -17,6 +17,7 @@ class ImageDallE:
         self.prompt = None
         self.response = None
         self.image_url = None
+        self.image_path = None
 
     def generate_image(self, prompt):
         self.prompt = prompt
@@ -29,21 +30,21 @@ class ImageDallE:
         )
         self.image_url = self.response.data[0].url
 
-        return f"\nImage URL: {self.image_url}"
+        return self.image_url
 
     def save_image(self, image_name=RandomGenerator().random_string()):
         request_response = requests.get(self.image_url, stream=True)
 
         if request_response.status_code == 200:
             image_filename = f"image_{image_name}.png"
-            image_path = os.path.join(self.image_folder, image_filename)
+            self.image_path = os.path.join(self.image_folder, image_filename)
 
-            with open(image_path, "wb+") as f:
+            with open(self.image_path, "wb+") as f:
                 for chunk in request_response.iter_content(8192):
                     f.write(chunk)
-            print(f"\nImaged saved at: {image_path}.")
+            return f"\nImaged saved at: {self.image_path}."
         else:
-            print("\nFailed to get image!")
+            return "\nFailed to get image!"
 
     def delete_image(self, image_name):
         image_filename = f"image_{image_name}.png"
