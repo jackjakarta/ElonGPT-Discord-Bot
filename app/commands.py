@@ -4,7 +4,7 @@ import requests
 
 from app.ai.chat import ChatGPT, ImageClassify
 from app.ai.imagine import ImageDallE
-from utils import save_json, load_json, create_embed
+from utils import save_json, load_json, create_embed, check_moderate
 from utils.settings import CLASSIFICATIONS_FILE, COMPLETIONS_FILE, RECIPES_FILE
 from utils.settings import CMC_API_KEY, CMC_API_URL
 
@@ -41,24 +41,27 @@ async def ask_command(message):
 async def fast_command(message):
     await message.channel.send(f"***Elon is cooking for {message.author.name}***")
 
+    prompt = message.content[6:]
     try:
-        ai = ChatGPT()
-        prompt = message.content[6:]
-        answer = ai.ask(prompt)
+        if check_moderate(prompt):
+            await message.channel.send("***Prompt is not appropriate and contains harmful content***")
+        else:
+            ai = ChatGPT()
+            answer = ai.ask(prompt)
 
-        await message.channel.send(f"***Answer for {message.author.name}:***\n\n{answer}")
+            await message.channel.send(f"***Answer for {message.author.name}:***\n\n{answer}")
 
-        # Save to JSON
-        json_data = load_json(COMPLETIONS_FILE)
-        json_data.append(
-            {
-                "user": message.author.name,
-                "prompt": prompt,
-                "completion": answer,
-            }
-        )
-        save_json(COMPLETIONS_FILE, json_data)
-        print("Prompt - Completion Pair saved to completions.json file!")
+            # Save to JSON
+            json_data = load_json(COMPLETIONS_FILE)
+            json_data.append(
+                {
+                    "user": message.author.name,
+                    "prompt": prompt,
+                    "completion": answer,
+                }
+            )
+            save_json(COMPLETIONS_FILE, json_data)
+            print("Prompt - Completion Pair saved to completions.json file!")
 
     except Exception as e:
         embed = create_embed(title="Unknown Error:", description=e)
@@ -135,6 +138,7 @@ async def imagine_command(message):
 
         await message.channel.send(ai.image_url)
         ai.save_image()
+        print(f"Image for {message.author.name} saved to {ai.image_path}.")
 
     except Exception as e:
         embed = create_embed(title="Unknown Error:", description=e)
