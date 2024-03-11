@@ -61,19 +61,16 @@ class ChatGPT:
 
 
 class ImageClassify(ChatGPT):
-    def __init__(self, model="gpt-4-vision-preview"):
+    def __init__(self, model="gpt-4-vision-preview", prompt="Classify this image."):
         super().__init__(model)
-        self.messages = [
-            {
-                "role": "system",
-                "content": "You are an AI Vision model. Classify the images in one paragraph."
-            }
-        ]
+        self.model = model
+        self.messages = []
         self.image_url = None
-
-    def interpret_image_url(self, image_url: str, prompt: str = "Classify this image."):
-        self.image_url = image_url
         self.prompt = prompt
+
+    def classify_image(self, image_url: str):
+        self.image_url = image_url
+        self.messages = []  # Clearing messages for each new classification
 
         msg_dict = {
             "role": "user",
@@ -94,11 +91,15 @@ class ImageClassify(ChatGPT):
         if self.image_url:
             self.messages.append(msg_dict)
 
-        self.completion = self.client.chat.completions.create(
-            model=self.model,
-            messages=self.messages,
-            max_tokens=650
-        )
-        self.messages.append({"role": "assistant", "content": str(self.completion.choices[0].message.content)})
+        try:
+            self.completion = self.client.chat.completions.create(
+                model=self.model,
+                messages=self.messages,
+                max_tokens=650
+            )
+            assistant_response = self.completion.choices[0].message.content
+        except Exception as e:
+            assistant_response = f"Error: {str(e)}"
 
-        return self.completion.choices[0].message.content
+        return assistant_response
+

@@ -148,11 +148,11 @@ async def imagine_command(message):
 
 async def classify_command(message):
     await message.channel.send(f"***Elon is cooking for {message.author.name}***")
+    input_url = message.content[10:]
 
     try:
         ai = ImageClassify()
-        input_url = message.content[10:]
-        answer = ai.interpret_image_url(input_url)
+        answer = ai.classify_image(input_url)
 
         await message.channel.send(f"***Image Classification for {message.author.name}:***\n\n{answer}")
 
