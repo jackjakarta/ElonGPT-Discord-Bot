@@ -14,7 +14,7 @@ async def ask_command(message):
     await message.channel.send(f"***Elon is cooking for {message.author.name}***")
 
     try:
-        ai = ChatGPT(model="gpt-4-turbo-preview")
+        ai = ChatGPT()
         prompt = message.content[5:]
         answer = ai.ask(prompt)
 
@@ -46,7 +46,7 @@ async def fast_command(message):
         if check_moderate(prompt):
             await message.channel.send("***Prompt is not appropriate and contains harmful content***")
         else:
-            ai = ChatGPT()
+            ai = ChatGPT(model="gpt-3.5-turbo")
             answer = ai.ask(prompt)
 
             await message.channel.send(f"***Answer for {message.author.name}:***\n\n{answer}")
@@ -76,7 +76,7 @@ async def recipe_command(message):
         ingredients = message.content[8:]
         prompt = f"Write a recipe based on these ingredients:\n{ingredients}\n"
 
-        ai = ChatGPT(model="gpt-4-turbo-preview")
+        ai = ChatGPT()
         recipe = ai.ask(prompt)
 
         await message.channel.send(f"***Recipe for {message.author.name}:***\n\n{recipe}")

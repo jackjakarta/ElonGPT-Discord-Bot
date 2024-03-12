@@ -9,7 +9,7 @@ from utils.settings import OPENAI_API_KEY, CHATS_FOLDER
 class ChatGPT:
     """ChatGPT Class"""
 
-    def __init__(self, user_name=None, model="gpt-3.5-turbo"):
+    def __init__(self, user_name=None, model="gpt-4-turbo-preview"):
         self.client = OpenAI(api_key=OPENAI_API_KEY)
         self.model = model
         self.prompt = None
