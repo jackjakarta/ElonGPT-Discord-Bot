@@ -108,15 +108,26 @@ async def chat_command(message):
             ai.save_chat()
 
         elif prompt == "clear":
-            ai.reset_chat()
-            ai.save_chat()
+            # ai.save_chat()
+            ai.delete_chat()
             await message.author.send("***Chat reset successfully!***")
 
         else:
             responses = [
                 f"Hello {message.author.name}, use ***?chat your question here*** to chat with the bot or  "
-                "***?chat reset*** to reset chat. Use ***?help*** to see all commands.",
-                # Add more responses here
+                "***?chat reset*** to reset the conversation. Use ***?help*** to see all commands.",
+
+                f"Hey there, {message.author.name}! Feel free to interact with me by typing ***?chat your question "
+                "here***. Need a fresh start? Just type ***?chat reset***. For a list of all commands, type "
+                "***?help***.",
+
+                f"Greetings, {message.author.name}! Use ***?chat your question*** here to start a conversation with "
+                "me, or type ***?chat reset*** if you want to begin anew. Curious about what else I can do? Type "
+                "***?help*** for a full list of commands.",
+
+                f"Hi {message.author.name}! To chat with me, type ***?chat your question here***. Want to clear our "
+                "conversation? Just enter ***?chat reset***. If you need assistance or want to explore more commands, "
+                "type ***?help***."
             ]
             await message.channel.send("***Check your DMs***")
             await message.author.send(choice(responses))

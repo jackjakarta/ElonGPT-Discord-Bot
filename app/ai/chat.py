@@ -20,7 +20,7 @@ class ChatGPT:
 
         self.messages = load_json_chat(os.path.join(self.chats_dir, self.chat_file))
 
-    def ask(self, prompt):
+    def ask(self, prompt, max_tokens: int = 400):
         self.prompt = prompt
 
         if self.prompt:
@@ -31,7 +31,7 @@ class ChatGPT:
         self.completion = self.client.chat.completions.create(
             model=self.model,
             messages=self.messages,
-            max_tokens=400
+            max_tokens=max_tokens
         )
         self.messages.append({"role": "assistant", "content": str(self.completion.choices[0].message.content)})
 
@@ -42,16 +42,15 @@ class ChatGPT:
         file_path = os.path.join(self.chats_dir, self.chat_file)
         save_json(file_path, json_data)
 
-    def reset_chat(self):
+    def delete_chat(self):
+        os.remove(os.path.join(self.chats_dir, self.chat_file))
         self.messages.append(
             {
-                "role": "user",
-                "content": "Clear the chat and start a new session. Forget everything we talked about before."
+                "role": "system",
+                "content": "You are ChatGPT, a large language model trained by OpenAI. Answer as concisely as "
+                           "possible."
             }
         )
-
-    def set_system_message(self, system_prompt):
-        self.messages.append({"role": "system", "content": system_prompt})
 
     def get_models(self):
         models_list = self.client.models.list().data
