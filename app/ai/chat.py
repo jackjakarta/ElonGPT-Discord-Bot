@@ -1,9 +1,9 @@
 import os
 
 from openai import OpenAI
-
+from ollama import Client
 from utils import load_json_chat, save_json
-from utils.settings import OPENAI_API_KEY, CHATS_FOLDER
+from utils.settings import OPENAI_API_KEY, CHATS_FOLDER, OLLAMA_SERVER
 
 
 class ChatGPT:
@@ -102,3 +102,28 @@ class ImageClassify(ChatGPT):
 
         return assistant_response
 
+
+class Ollama:
+    """Ollama Class"""
+
+    def __init__(self, model="orca-mini"):
+        self.client = Client(host=OLLAMA_SERVER)
+        self.model = model
+        self.prompt = None
+        self.completion = None
+        self.messages = []
+
+    def ask(self, prompt):
+        self.prompt = prompt
+
+        if self.prompt:
+            self.messages.append(
+                {"role": "user", "content": self.prompt}
+            )
+
+        self.completion = self.client.chat(model=self.model, messages=self.messages)
+        response = self.completion.get('message').get('content')
+
+        self.messages.append({"role": "assistant", "content": response})
+
+        return response
