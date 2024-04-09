@@ -283,7 +283,7 @@ async def help_command(message):
     help_text = "***?ask*** - insert a question and get an answer from Elon (gpt-4) \n\n" \
                 "***?fast*** - insert a question and get an answer in fast mode (gpt-3.5) \n\n" \
                 "***?chat*** - open chat session and then use ?chat 'prompt' to chat with Elon \n\n" \
-                "***?chat*** -  insert a question and get an answer from your selected model (default = orca-mini\n\n" \
+                "***?ollama*** -  insert a question and get an answer from your selected model (default = orca-mini\n\n" \
                 "***?recipe*** - insert ingredients and get a recipe \n\n" \
                 "***?image*** - insert prompt to generate an image based on a description \n\n" \
                 "***?classify*** - insert image url to generate an image description \n\n" \
