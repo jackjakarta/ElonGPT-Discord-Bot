@@ -119,6 +119,9 @@ Now that your bot is up and running, here are some of the commands you can use:
 - `?fast 'question'`: Get a quick answer using the gpt-3.5-turbo model.
 
 
+- `?ollama 'question'`: Get an answer using ollama from your hosted model.
+
+
 - `?chat`: open chat session in DMs and then use `?chat 'prompt'` to chat with the bot.
 
 

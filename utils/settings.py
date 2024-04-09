@@ -8,6 +8,8 @@ OPENAI_API_KEY = config("OPENAI_API_KEY")
 CMC_API_KEY = config("CMC_PRO_API_KEY")
 CMC_API_URL = config("CMC_API_URL", default="https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest")
 
+OLLAMA_SERVER = config("OLLAMA_SERVER", default="http://localhost:11434")
+
 IMAGE_FOLDER = config("IMAGE_FOLDER", default="generated_images")
 os.makedirs(IMAGE_FOLDER, exist_ok=True)
 

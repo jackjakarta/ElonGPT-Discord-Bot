@@ -1,8 +1,9 @@
 from random import choice
 
 import requests
+from httpx import ConnectError
 
-from app.ai.chat import ChatGPT, ImageClassify
+from app.ai.chat import ChatGPT, ImageClassify, Ollama
 from app.ai.imagine import ImageDallE
 from utils import save_json, load_json, create_embed, check_moderate
 from utils.settings import CLASSIFICATIONS_FILE, COMPLETIONS_FILE, RECIPES_FILE
@@ -67,6 +68,22 @@ async def fast_command(message):
         embed = create_embed(title="Unknown Error:", description=e)
         await message.channel.send(embed=embed)
         print(f"Error: {e}")
+
+
+async def ollama_command(message):
+    await message.channel.send(f"***Elon is cooking for {message.author.name}***")
+
+    try:
+        ai = Ollama()
+
+        prompt = message.content[8:]
+        response = ai.ask(prompt)
+        await message.channel.send(f"***Answer for {message.author.name}:***\n\n{response}")
+
+    except ConnectError as e:
+        description = f"Connection to Model failed. Error: {e}"
+        embed = create_embed(title="Model Connection Error:", description=description)
+        await message.channel.send(embed=embed)
 
 
 async def recipe_command(message):
@@ -228,7 +245,7 @@ async def joke_command(message):
 
             if api_response.status_code == 200:
                 joke = api_response.json()
-                joke_format = joke["value"]
+                joke_format = joke.get("value")
                 await message.channel.send(joke_format)
             else:
                 embed = create_embed(title="API Call Failed:", description="Could not retrieve joke from Chuck Norris "
@@ -266,6 +283,7 @@ async def help_command(message):
     help_text = "***?ask*** - insert a question and get an answer from Elon (gpt-4) \n\n" \
                 "***?fast*** - insert a question and get an answer in fast mode (gpt-3.5) \n\n" \
                 "***?chat*** - open chat session and then use ?chat 'prompt' to chat with Elon \n\n" \
+                "***?chat*** -  insert a question and get an answer from your selected model (default = orca-mini\n\n" \
                 "***?recipe*** - insert ingredients and get a recipe \n\n" \
                 "***?image*** - insert prompt to generate an image based on a description \n\n" \
                 "***?classify*** - insert image url to generate an image description \n\n" \
