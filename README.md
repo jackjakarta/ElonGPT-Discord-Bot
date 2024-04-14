@@ -65,46 +65,40 @@ To set up this bot on your own server, follow these steps:
 
 ## Docker Run
 
-Alternatively, you can run the bot within a Docker container by pulling the latest image from the registry **or** by building your own image using the `Dockerfile`.
-
-### Get image
-
-Pull the image from the registry:
-
- ```bash
- docker pull jackjakarta/elongpt:latest
- ```
-
-Build your own image using the `Dockerfile` (you can use a different image name):
-```bash
-docker build -t jackjakarta/elongpt:latest .
-```
+Alternatively, you can run the bot within a Docker container by using the latest image from the registry.
 
 ### Run container
 
-Run the container while supplying your environment variables:
+Run the container while supplying your environment variables.
 
- ```bash
- docker run -d -t \
- -e OPENAI_API_KEY=your-api-key \
- -e DISCORD_TOKEN=your-api-key \
- -e CMC_PRO_API_KEY=your-api-key \
- --name elongpt-bot \
- jackjakarta/elongpt:latest
- ```
+```bash
+docker run -d -t \
+-e OPENAI_API_KEY=your-api-key \
+-e DISCORD_TOKEN=your-api-key \
+-e CMC_PRO_API_KEY=your-api-key \
+--name elongpt-bot \
+jackjakarta/elongpt:latest
+```
 
-Whenever you stop and restart the container, it will automatically fetch the latest version from GitHub:
+Whenever you stop and restart the container, it will automatically fetch the latest version from GitHub.
 
- ```bash
- docker stop elongpt-bot
- docker start elongpt-bot
- ```
+```bash
+docker stop elongpt-bot
+docker start elongpt-bot
+```
 
-You can access the container's bash shell with:
+You can access the container's bash shell with.
 
- ```bash
+```bash
 docker exec -it elongpt-bot bash
- ```
+```
+
+### Build your own image
+
+You can build your own image using the `Dockerfile`.
+```bash
+docker build -t yourimagename:tag .
+```
 
 ## Discord Commands
 
