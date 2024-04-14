@@ -13,8 +13,7 @@ RUN cd ~ && \
     cd ElonGPT-Discord-Bot/ && \
     python3 -m venv env && \
     . env/bin/activate && \
-    pip3 install -r requirements.txt && \
-    chmod +x entrypoint.sh
+    pip3 install -r requirements.txt
 
 # Set the entrypoint script
 ENTRYPOINT ["/root/ElonGPT-Discord-Bot/entrypoint.sh"]
