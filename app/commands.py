@@ -7,7 +7,7 @@ from app.ai.chat import ChatGPT, ImageClassify, Ollama
 from app.ai.imagine import ImageDallE
 from utils import save_json, load_json, create_embed, check_moderate
 from utils.settings import CLASSIFICATIONS_FILE, COMPLETIONS_FILE, RECIPES_FILE
-from utils.settings import CMC_API_KEY, CMC_API_URL
+from utils.settings import CMC_API_KEY, CMC_API_URL, VISION_BRAIN_API_KEY, VISION_BRAIN_API_URL
 
 
 # Text Generation Commands
@@ -224,6 +224,36 @@ async def price_command(message):
         await message.channel.send(embed=embed)
     else:
         await message.channel.send(f"Could not get price and market capitalization for {symbol}")
+
+
+async def tts_command(message):
+    await message.channel.send(f"***Generating audio for {message.author.name}***")
+    text = message.content[5:]
+    text_list = text.split("-v ")
+
+    headers = {
+        "X-Api-Key": VISION_BRAIN_API_KEY,
+    }
+    data = {
+        "text": text_list[0] if len(text_list) > 1 else text,
+        "voice": text_list[1] if len(text_list) > 1 else "fable",
+    }
+
+    try:
+        response = requests.post(VISION_BRAIN_API_URL, data=data, headers=headers)
+        response.raise_for_status()
+        data = response.json()
+        md_encode = f"[Download File]({data.get('file')})"
+
+        await message.channel.send(f"***Audio for {message.author.name}:***\n\n***File:*** {md_encode}\n"
+                                   f"***Text:*** {data.get('text')}")
+
+    except requests.exceptions.RequestException as e:
+        await message.channel.send(f'An error occurred: {e}')
+        print(f'An error occurred: {e}')
+    else:
+        print('API call was successful!')
+        print(data)
 
 
 async def joke_command(message):

@@ -16,3 +16,4 @@ data/
 generated_images/
 tools/
 *.log
+docker_commands.txt

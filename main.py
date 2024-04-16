@@ -1,7 +1,7 @@
 import discord
 
 from app.commands import ask_command, fast_command, imagine_command, recipe_command, chat_command, ollama_command
-from app.commands import price_command, joke_command, poll_command, help_command, classify_command
+from app.commands import price_command, joke_command, poll_command, help_command, classify_command, tts_command
 from utils.settings import DISCORD_TOKEN
 
 client = discord.Client(intents=discord.Intents.all())
@@ -31,6 +31,8 @@ async def on_message(message):
         await imagine_command(message)
     elif message.content.startswith("?ollama"):
         await ollama_command(message)
+    elif message.content.startswith("?tts"):
+        await tts_command(message)
     elif message.content.startswith("?recipe"):
         await recipe_command(message)
     elif message.content.startswith("?classify"):
