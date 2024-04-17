@@ -253,7 +253,7 @@ async def tts_command(message):
         print(f'An error occurred: {e}')
     else:
         print('API call was successful!')
-        print(data)
+        print(f"API Call by {message.author.name} - {data}")
 
 
 async def joke_command(message):
