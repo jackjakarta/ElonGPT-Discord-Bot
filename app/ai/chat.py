@@ -9,7 +9,7 @@ from utils.settings import OPENAI_API_KEY, CHATS_FOLDER, OLLAMA_SERVER
 class ChatGPT:
     """ChatGPT Class"""
 
-    def __init__(self, user_name=None, model="gpt-4-turbo-preview"):
+    def __init__(self, user_name=None, model="gpt-4-turbo"):
         self.client = OpenAI(api_key=OPENAI_API_KEY)
         self.model = model
         self.prompt = None
@@ -60,9 +60,8 @@ class ChatGPT:
 
 
 class ImageClassify(ChatGPT):
-    def __init__(self, model="gpt-4-vision-preview", prompt="Classify this image."):
-        super().__init__(model)
-        self.model = model
+    def __init__(self, prompt="Classify this image."):
+        super().__init__()
         self.messages = []
         self.image_url = None
         self.prompt = prompt
