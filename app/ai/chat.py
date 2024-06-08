@@ -1,15 +1,16 @@
 import os
+from token import OP
 
 from openai import OpenAI
 from ollama import Client
 from utils import load_json_chat, save_json
-from utils.settings import OPENAI_API_KEY, CHATS_FOLDER, OLLAMA_SERVER
+from utils.settings import OPENAI_API_KEY, CHATS_FOLDER, OLLAMA_SERVER, OPENAI_MODEL
 
 
 class ChatGPT:
     """ChatGPT Class"""
 
-    def __init__(self, user_name=None, model="gpt-4-turbo"):
+    def __init__(self, user_name=None, model=OPENAI_MODEL):
         self.client = OpenAI(api_key=OPENAI_API_KEY)
         self.model = model
         self.prompt = None

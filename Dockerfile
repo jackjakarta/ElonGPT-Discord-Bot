@@ -2,7 +2,8 @@ FROM ubuntu:22.04
 
 RUN apt-get update && \
     apt-get upgrade -y && \
-    apt-get install -y python3 git python3-pip python3-venv && \
+    apt-get install -y python3 git && \
+    apt-get install -y python3-pip python3-venv && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install nano if needed
