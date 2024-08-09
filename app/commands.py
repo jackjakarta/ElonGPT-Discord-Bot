@@ -47,7 +47,7 @@ async def fast_command(message):
         if check_moderate(prompt):
             await message.channel.send("***Prompt is not appropriate and contains harmful content***")
         else:
-            ai = ChatGPT(model="gpt-3.5-turbo")
+            ai = ChatGPT(model="gpt-4o-mini")
             answer = ai.ask(prompt)
 
             await message.channel.send(f"***Answer for {message.author.name}:***\n\n{answer}")
