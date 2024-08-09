@@ -1,10 +1,9 @@
 import os
-from token import OP
 
 from openai import OpenAI
 from ollama import Client
 from utils import load_json_chat, save_json
-from utils.settings import OPENAI_API_KEY, CHATS_FOLDER, OLLAMA_SERVER, OPENAI_MODEL
+from utils.settings import OPENAI_API_KEY, CHATS_FOLDER, OLLAMA_SERVER, OPENAI_MODEL, OLLAMA_MODEL
 
 
 class ChatGPT:
@@ -106,7 +105,7 @@ class ImageClassify(ChatGPT):
 class Ollama:
     """Ollama Class"""
 
-    def __init__(self, model="orca-mini"):
+    def __init__(self, model=OLLAMA_MODEL):
         self.client = Client(host=OLLAMA_SERVER)
         self.model = model
         self.prompt = None

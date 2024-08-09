@@ -11,6 +11,7 @@ CMC_API_URL = config("CMC_API_URL", default="https://pro-api.coinmarketcap.com/v
 VISION_BRAIN_API_KEY = config("VISION_BRAIN_API_KEY", default="no-api-key-for-bot-to-start")
 VISION_BRAIN_API_URL = config("VISION_BRAIN_API_URL", default="https://visionbrain.xyz/api/tts/")
 OLLAMA_SERVER = config("OLLAMA_SERVER", default="http://localhost:11434")
+OLLAMA_MODEL = config("OLLAMA_MODEL", default="orca-mini")
 
 IMAGE_FOLDER = config("IMAGE_FOLDER", default="generated_images")
 os.makedirs(IMAGE_FOLDER, exist_ok=True)
