@@ -12,6 +12,7 @@ VISION_BRAIN_API_KEY = config("VISION_BRAIN_API_KEY", default="no-api-key-for-bo
 VISION_BRAIN_API_URL = config("VISION_BRAIN_API_URL", default="https://visionbrain.xyz/api/tts/")
 OLLAMA_SERVER = config("OLLAMA_SERVER", default="http://localhost:11434")
 OLLAMA_MODEL = config("OLLAMA_MODEL", default="orca-mini")
+BACKEND_API_URL = config("BACKEND_API_URL", default="http://127.0.0.1:3000/api")
 
 IMAGE_FOLDER = config("IMAGE_FOLDER", default="generated_images")
 os.makedirs(IMAGE_FOLDER, exist_ok=True)
