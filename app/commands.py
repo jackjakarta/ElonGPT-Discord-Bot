@@ -52,7 +52,6 @@ async def fast_command(message):
 
             await message.channel.send(f"***Answer for {message.author.name}:***\n\n{answer}")
 
-            # Save to JSON
             json_data = load_json(COMPLETIONS_FILE)
             json_data.append(
                 {
@@ -98,7 +97,6 @@ async def recipe_command(message):
 
         await message.channel.send(f"***Recipe for {message.author.name}:***\n\n{recipe}")
 
-        # Save to JSON
         recipes_data = load_json(RECIPES_FILE)
         recipes_data.append(
             {
@@ -111,6 +109,27 @@ async def recipe_command(message):
 
     except Exception as e:
         embed = create_embed(title="Unknown Error:", description=e)
+        await message.channel.send(embed=embed)
+        print(f"Unknown Error: {e}")
+
+async def get_recipes_command(message):
+    try:
+        recipes_data = load_json(RECIPES_FILE)
+        user_recipes = [recipe for recipe in recipes_data if recipe["user"] == message.author.name]
+
+        if not user_recipes:
+            await message.channel.send(f"***{message.author.name}, you have no saved recipes yet.***")
+            return
+
+        recipes_message = f"***Recipes for {message.author.name}:***\n\n"
+
+        for idx, recipe in enumerate(user_recipes, start=1):
+            recipes_message += f"**Recipe {idx}:**\nIngredients: {recipe['ingredients']}\n\n"
+
+        await message.channel.send(recipes_message)
+
+    except Exception as e:
+        embed = create_embed(title="Unknown Error:", description=str(e))
         await message.channel.send(embed=embed)
         print(f"Unknown Error: {e}")
 
@@ -183,7 +202,6 @@ async def classify_command(message):
 
         await message.channel.send(f"***Image Classification for {message.author.name}:***\n\n{answer}")
 
-        # Save to JSON
         classification = {
             "user": message.author.name,
             "url": input_url,
@@ -264,7 +282,6 @@ async def joke_command(message):
     get_categories_list = get_categories.json()
     categories = ", ".join(get_categories_list)
 
-    # Check if the category exists else call the api
     if category not in get_categories_list:
         await message.channel.send(f"**Available categories:** {categories}")
     else:
@@ -290,20 +307,17 @@ async def joke_command(message):
 async def poll_command(message):
     await message.channel.send(f"***Creating poll for {message.author.name}***")
 
-    # Get the poll question and answer options
     poll_data = message.content[6:].split('/')
     question = poll_data[0].strip()
     options = [option.strip() for option in poll_data[1:]]
 
-    # Create the poll message embed
     embed = create_embed(title=question, description=None)
+
     for i, option in enumerate(options):
         embed.add_field(name=f"{i + 1}. {option}", value="\u200b", inline=False)
 
-    # Send the poll message and save it to a variable
     poll_message = await message.channel.send(embed=embed)
 
-    # Add the reactions to the poll message
     for i in range(len(options)):
         await poll_message.add_reaction(f'{i + 1}\u20e3')
 
@@ -314,6 +328,7 @@ async def help_command(message):
                 "***?chat*** - open chat session and then use ?chat 'prompt' to chat with Elon \n\n" \
                 "***?ollama*** -  insert a question and get an answer from your selected model (default = orca-mini\n\n" \
                 "***?recipe*** - insert ingredients and get a recipe \n\n" \
+                "***?myrecipes*** - get your recipes \n\n" \
                 "***?image*** - insert prompt to generate an image based on a description \n\n" \
                 "***?classify*** - insert image url to generate an image description \n\n" \
                 "***?price*** - insert cryptocurrency symbol to get price and market cap \n\n" \
