@@ -114,24 +114,43 @@ async def recipe_command(message):
 
 async def get_recipes_command(message):
     try:
+        # Load all recipes from the JSON file
         recipes_data = load_json(RECIPES_FILE)
+
+        # Filter recipes by the user who requested them
         user_recipes = [recipe for recipe in recipes_data if recipe["user"] == message.author.name]
 
         if not user_recipes:
             await message.channel.send(f"***{message.author.name}, you have no saved recipes yet.***")
             return
 
+        # Prepare a string to display the user's recipes
         recipes_message = f"***Recipes for {message.author.name}:***\n\n"
-
+        messages_to_send = []
+        
         for idx, recipe in enumerate(user_recipes, start=1):
-            recipes_message += f"**Recipe {idx}:**\nIngredients: {recipe['ingredients']}\n\n"
+            recipe_text = f"**Recipe {idx}:**\nIngredients: {recipe['ingredients']}\nRecipe: {recipe['recipe']}\n\n"
+            
+            # Check if the current message is too long, if so, split it
+            if len(recipes_message) + len(recipe_text) > 2000:
+                messages_to_send.append(recipes_message)
+                recipes_message = ""  # Start a new message chunk
+            
+            recipes_message += recipe_text
+        
+        # Append any remaining message to the list
+        if recipes_message:
+            messages_to_send.append(recipes_message)
 
-        await message.channel.send(recipes_message)
+        # Send each message separately
+        for msg in messages_to_send:
+            await message.channel.send(msg)
 
     except Exception as e:
         embed = create_embed(title="Unknown Error:", description=str(e))
         await message.channel.send(embed=embed)
         print(f"Unknown Error: {e}")
+
 
 
 async def chat_command(message):
