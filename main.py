@@ -1,6 +1,6 @@
 import discord
 
-from app.commands import ask_command, fast_command, imagine_command, recipe_command, chat_command, ollama_command
+from app.commands import ask_command, fast_command, imagine_command, recipe_command, chat_command, ollama_command, get_images_command
 from app.commands import price_command, joke_command, poll_command, help_command, classify_command, tts_command, get_recipes_command
 from utils.settings import DISCORD_TOKEN
 
@@ -29,6 +29,8 @@ async def on_message(message):
         await chat_command(message)
     elif message.content.startswith("?image"):
         await imagine_command(message)
+    elif message.content.startswith("?myimages"):
+        await get_images_command(message)
     elif message.content.startswith("?ollama"):
         await ollama_command(message)
     elif message.content.startswith("?tts"):
