@@ -27,8 +27,8 @@ jobs:
       - name: Build and push docker image
         run: |
           # Build the Docker image
-          docker build --no-cache -t ${{ secrets.DOCKER_USERNAME }}/elongpt:db-version .
-          docker push ${{ secrets.DOCKER_USERNAME }}/elongpt:db-version
+          docker build --no-cache -t ${{ secrets.DOCKER_USERNAME }}/elongpt:latest .
+          docker push ${{ secrets.DOCKER_USERNAME }}/elongpt:latest
 
       - name: Deploy to remote server
         uses: appleboy/ssh-action@v0.1.6
@@ -38,7 +38,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             # Pull and deploy the image with the manually created tag
-            docker pull ${{ secrets.DOCKER_USERNAME }}/elongpt:db-version
+            docker pull ${{ secrets.DOCKER_USERNAME }}/elongpt:latest
             docker rm -f elongpt-bot || true
             docker run -d -t \
             -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
@@ -50,4 +50,4 @@ jobs:
             -e BACKEND_API_KEY=${{ secrets.BACKEND_API_KEY }} \
             --restart always \
             --name elongpt-bot \
-            ${{ secrets.DOCKER_USERNAME }}/elongpt:db-version
+            ${{ secrets.DOCKER_USERNAME }}/elongpt:latest
