@@ -5,8 +5,8 @@ from httpx import ConnectError
 
 from app.ai.chat import ChatGPT, ImageClassify, Ollama
 from app.ai.imagine import ImageDallE
-from utils import save_json, load_json, create_embed, check_moderate
-from utils.settings import CLASSIFICATIONS_FILE, COMPLETIONS_FILE, RECIPES_FILE
+from utils import create_embed, check_moderate
+from utils.api import db_create_recipe, db_create_completion, db_create_classification, s3_save_image, db_get_user_images
 from utils.settings import CMC_API_KEY, CMC_API_URL, VISION_BRAIN_API_KEY, VISION_BRAIN_API_URL
 
 
@@ -21,17 +21,13 @@ async def ask_command(message):
 
         await message.channel.send(f"***Answer for {message.author.name}:***\n\n{answer}")
 
-        # Save to JSON
-        json_data = load_json(COMPLETIONS_FILE)
-        json_data.append(
-            {
-                "user": message.author.name,
-                "prompt": prompt,
-                "completion": answer,
-            }
-        )
-        save_json(COMPLETIONS_FILE, json_data)
-        print("Prompt - Completion Pair saved to completions.json file!")
+        api_response = db_create_completion(message.author.name, prompt, answer)
+        print(api_response)
+
+    except requests.exceptions.HTTPError as e:
+        embed = create_embed(title="API Error:", description=e)
+        await message.channel.send(embed=embed)
+        print(f"API Error: {e}")
 
     except Exception as e:
         embed = create_embed(title="Unknown Error:", description=e)
@@ -52,16 +48,13 @@ async def fast_command(message):
 
             await message.channel.send(f"***Answer for {message.author.name}:***\n\n{answer}")
 
-            json_data = load_json(COMPLETIONS_FILE)
-            json_data.append(
-                {
-                    "user": message.author.name,
-                    "prompt": prompt,
-                    "completion": answer,
-                }
-            )
-            save_json(COMPLETIONS_FILE, json_data)
-            print("Prompt - Completion Pair saved to completions.json file!")
+            api_response = db_create_completion(message.author.name, prompt, answer)
+            print(api_response)
+
+    except requests.exceptions.HTTPError as e:
+        embed = create_embed(title="API Error:", description=e)
+        await message.channel.send(embed=embed)
+        print(f"API Error: {e}")
 
     except Exception as e:
         embed = create_embed(title="Unknown Error:", description=e)
@@ -97,60 +90,22 @@ async def recipe_command(message):
 
         await message.channel.send(f"***Recipe for {message.author.name}:***\n\n{recipe}")
 
-        recipes_data = load_json(RECIPES_FILE)
-        recipes_data.append(
-            {
-                "user": message.author.name,
-                "ingredients": ingredients,
-                "recipe": recipe,
-            }
-        )
-        save_json(RECIPES_FILE, recipes_data)
+        recipe_response = db_create_recipe(message.author.name, ingredients, recipe)
+        print(recipe_response)
+
+    except requests.exceptions.HTTPError as e:
+        embed = create_embed(title="API Error:", description=e)
+        await message.channel.send(embed=embed)
+        print(f"API Error: {e}")
 
     except Exception as e:
         embed = create_embed(title="Unknown Error:", description=e)
         await message.channel.send(embed=embed)
         print(f"Unknown Error: {e}")
 
+
 async def get_recipes_command(message):
-    try:
-        # Load all recipes from the JSON file
-        recipes_data = load_json(RECIPES_FILE)
-
-        # Filter recipes by the user who requested them
-        user_recipes = [recipe for recipe in recipes_data if recipe["user"] == message.author.name]
-
-        if not user_recipes:
-            await message.channel.send(f"***{message.author.name}, you have no saved recipes yet.***")
-            return
-
-        # Prepare a string to display the user's recipes
-        recipes_message = f"***Recipes for {message.author.name}:***\n\n"
-        messages_to_send = []
-        
-        for idx, recipe in enumerate(user_recipes, start=1):
-            recipe_text = f"**Recipe {idx}:**\nIngredients: {recipe['ingredients']}\nRecipe: {recipe['recipe']}\n\n"
-            
-            # Check if the current message is too long, if so, split it
-            if len(recipes_message) + len(recipe_text) > 2000:
-                messages_to_send.append(recipes_message)
-                recipes_message = ""  # Start a new message chunk
-            
-            recipes_message += recipe_text
-        
-        # Append any remaining message to the list
-        if recipes_message:
-            messages_to_send.append(recipes_message)
-
-        # Send each message separately
-        for msg in messages_to_send:
-            await message.channel.send(msg)
-
-    except Exception as e:
-        embed = create_embed(title="Unknown Error:", description=str(e))
-        await message.channel.send(embed=embed)
-        print(f"Unknown Error: {e}")
-
+    await message.channel.send(f"***Not implemented yet***")
 
 
 async def chat_command(message):
@@ -202,13 +157,30 @@ async def imagine_command(message):
         ai.generate_image(prompt)
 
         await message.channel.send(ai.image_url)
-        ai.save_image()
-        print(f"Image for {message.author.name} saved to {ai.image_path}.")
+        save_image = s3_save_image(image_url=ai.image_url, discord_user=message.author.name, prompt=prompt)
+        print(save_image)
 
     except Exception as e:
         embed = create_embed(title="Unknown Error:", description=e)
         await message.channel.send(embed=embed)
         print(f"Unknown Error: {e}")
+
+
+async def get_images_command(message):
+    try:
+        user_images = db_get_user_images(message.author.name)
+        print(user_images)
+
+        if user_images:
+            for image in user_images:
+                await message.author.send(image.get("imageUrl"))
+        else:
+            await message.author.send(f"No images found for {message.author.name}")
+
+    except Exception as e:
+        embed = create_embed(title="Unknown Error:", description=e)
+        await message.author.send(embed=embed)
+        print(f"Unknown Error: {e}")    
 
 
 async def classify_command(message):
@@ -221,16 +193,14 @@ async def classify_command(message):
 
         await message.channel.send(f"***Image Classification for {message.author.name}:***\n\n{answer}")
 
-        classification = {
-            "user": message.author.name,
-            "url": input_url,
-            "classification": answer,
-        }
+        api_response = db_create_classification(message.author.name, input_url, answer)
+        print(api_response)
+        print(f"Image classification saved to db.")
 
-        json_data = load_json(CLASSIFICATIONS_FILE)
-        json_data.append(classification)
-        save_json(CLASSIFICATIONS_FILE, json_data)
-        print(f"Image classification saved to {CLASSIFICATIONS_FILE}.")
+    except requests.exceptions.HTTPError as e:
+        embed = create_embed(title="API Error:", description=e)
+        await message.channel.send(embed=embed)
+        print(f"API Error: {e}")
 
     except Exception as e:
         embed = create_embed(title="Unknown Error:", description=e)
