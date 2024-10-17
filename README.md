@@ -1,6 +1,7 @@
 # Discord Bot with AI Integration
 
 **Table of Contents**
+
 - [Introduction](#introduction)
 - [Features](#features)
 - [Bot Setup](#bot-setup)
@@ -9,7 +10,11 @@
 
 ## Introduction
 
-Welcome to the Discord Bot with AI Integration! This versatile bot seamlessly integrates with a variety of AI models to offer engaging and practical features. It leverages the OpenAI API for natural language processing tasks and harnesses the power of DALL-E for image generation. Additionally, it can interact with the CoinMarketCap API to provide up-to-date cryptocurrency data. Please note that this bot uses the older Discord library for bot creation and does not employ application commands.
+This bot seamlessly integrates with a variety of AI models to offer engaging and practical features. It leverages the OpenAI API for natural language processing tasks and harnesses the power of DALL-E for image generation. Additionally, it can interact with the CoinMarketCap API to provide up-to-date cryptocurrency data. Please note that this bot uses the older Discord library for bot creation and does not employ application commands.
+
+## Branch
+
+Use the `release/v1` branch to run the bot. The `main` branch has been updated with some personal configuration.
 
 ## Features
 
@@ -45,17 +50,17 @@ To set up this bot on your own server, follow these steps:
 
 3. Install the necessary dependencies by running the following command:
 
-    ```bash
-    pip3 install -r requirements.txt
-    ```
+   ```bash
+   pip3 install -r requirements.txt
+   ```
 
-4. Configure your environment variables by setting up an `.env` file following the template provided at `.env.default`.
+4. Configure your environment variables following the template provided at `.env.default`.
 
 5. Start the bot by executing the following command:
 
-    ```bash
-    python3 main.py
-    ```
+   ```bash
+   python3 main.py
+   ```
 
 6. Or, start the bot in the background by executing the start script labeled `start_bot.sh`.
 
@@ -63,13 +68,17 @@ To set up this bot on your own server, follow these steps:
    ./start_bot.sh
    ```
 
-## Docker Run
+## Docker
 
-Alternatively, you can run the bot within a Docker container by using the latest image from the registry.
+Alternatively, you can run the bot within a Docker container.
 
 ### Run container
 
-Run the container while supplying your environment variables.
+Run the container while supplying your environment variables. (remember to use the right branch)
+
+```bash
+docker build -t yourimagename:tag .
+```
 
 ```bash
 docker run -d -t \
@@ -77,14 +86,7 @@ docker run -d -t \
 -e DISCORD_TOKEN=your-api-key \
 -e CMC_PRO_API_KEY=your-api-key \
 --name elongpt-bot \
-jackjakarta/elongpt:latest
-```
-
-Whenever you stop and restart the container, it will automatically fetch the latest version from GitHub.
-
-```bash
-docker stop elongpt-bot
-docker start elongpt-bot
+yourimagename:tag
 ```
 
 You can access the container's bash shell with.
@@ -93,42 +95,26 @@ You can access the container's bash shell with.
 docker exec -it elongpt-bot bash
 ```
 
-### Build your own image
-
-You can build your own image using the `Dockerfile`.
-```bash
-docker build -t yourimagename:tag .
-```
-
 ## Discord Commands
 
 Now that your bot is up and running, here are some of the commands you can use:
 
 - `?help`: Retrieve a list of all available commands.
 
-
 - `?ask 'question'`: Ask a question and receive an answer from the gpt-4 model.
-
 
 - `?fast 'question'`: Get a quick answer using the gpt-3.5-turbo model.
 
-
 - `?ollama 'question'`: Get an answer using ollama from your hosted model.
-
 
 - `?chat`: open chat session in DMs and then use `?chat 'prompt'` to chat with the bot.
 
-
 - `?image 'description'`: Generate an image based on a description.
-
 
 - `?classify 'image url'`: Classifies images and describes them
 
-
 - `?price 'symbol'`: Fetch the price and market cap of a cryptocurrency.
 
-
 - `?joke`: Enjoy a Chuck Norris joke using the free API.
-
 
 - `?poll 'question'/'option1'/'option2'/...`: Create a poll with multiple options and engage your server members in a vote.
