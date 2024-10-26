@@ -1,7 +1,23 @@
 import discord
 
-from app.commands import ask_command, fast_command, imagine_command, recipe_command, chat_command, ollama_command, get_images_command
-from app.commands import price_command, joke_command, poll_command, help_command, classify_command, tts_command, get_recipes_command
+from app.commands import (
+    ask_command,
+    fast_command,
+    imagine_command,
+    recipe_command,
+    chat_command,
+    ollama_command,
+    get_images_command,
+)
+from app.commands import (
+    price_command,
+    joke_command,
+    poll_command,
+    help_command,
+    classify_command,
+    tts_command,
+    get_recipes_command,
+)
 from utils.settings import DISCORD_TOKEN
 
 client = discord.Client(intents=discord.Intents.all())

@@ -30,7 +30,7 @@ def db_create_recipe(discord_user: str, ingredients: str, instructions: str):
     response.raise_for_status()
 
     return response.json()
-    
+
 
 def db_create_completion(discord_user: str, prompt: str, completion: str):
     endpoint_url = get_endpoint("completion")
@@ -46,7 +46,7 @@ def db_create_completion(discord_user: str, prompt: str, completion: str):
     response.raise_for_status()
 
     return response.json()
-    
+
 
 def db_create_classification(discord_user: str, image_url: str, classification: str):
     endpoint_url = get_endpoint("classification")
@@ -78,6 +78,7 @@ def s3_save_image(discord_user: str, image_url: str, prompt: str):
     response.raise_for_status()
 
     return response.json()
+
 
 def db_get_user_images(discord_user: str):
     endpoint_url = get_endpoint(f"images")

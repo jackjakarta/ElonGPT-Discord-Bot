@@ -12,29 +12,29 @@ from .settings import OPENAI_API_KEY
 
 def load_json(filename):
     try:
-        with open(filename, 'r') as file:
+        with open(filename, "r") as file:
             return json.load(file)
     except ValueError as e:
         print(f"Error: {e}")
     except FileNotFoundError:
-        with open(filename, 'w') as file:
+        with open(filename, "w") as file:
             json.dump([], file)
         return []
 
 
 def load_json_chat(filename):
     try:
-        with open(filename, 'r') as file:
+        with open(filename, "r") as file:
             return json.load(file)
     except ValueError as e:
         print(f"Error: {e}")
     except FileNotFoundError:
-        with open(filename, 'w') as file:
+        with open(filename, "w") as file:
             messages = [
                 {
                     "role": "system",
                     "content": "You are ChatGPT, a large language model trained by OpenAI. Answer as concisely as "
-                               "possible."
+                    "possible.",
                 }
             ]
             json.dump(messages, file)
@@ -42,7 +42,7 @@ def load_json_chat(filename):
 
 
 def save_json(filename, data):
-    with open(filename, 'w') as file:
+    with open(filename, "w") as file:
         json.dump(data, file, indent=4)
 
 
@@ -53,7 +53,9 @@ def create_embed(title, description, color=0xFFFFFF):
 
 def check_moderate(input_text: str) -> bool:
     client = OpenAI(api_key=OPENAI_API_KEY)
-    response = client.moderations.create(input=input_text, model="text-moderation-stable")
+    response = client.moderations.create(
+        input=input_text, model="text-moderation-stable"
+    )
     categories_object = response.results[0].categories
 
     if any(getattr(categories_object, attr) for attr in categories_object.__dict__):
@@ -64,6 +66,7 @@ def check_moderate(input_text: str) -> bool:
 
 class RandomGenerator:
     """Random String Generator. Default length is 10 characters."""
+
     def __init__(self):
         self.length = None
 
@@ -96,8 +99,8 @@ class RandomGenerator:
         timestamp = time.time()
         time_zone = timezone(timedelta(tz_delta))
         datetime_obj = datetime.fromtimestamp(timestamp, tz=time_zone)
-        formatted_date = datetime_obj.strftime('%d-%m-%Y')
-        formatted_time = datetime_obj.strftime('%H-%M')
+        formatted_date = datetime_obj.strftime("%d-%m-%Y")
+        formatted_time = datetime_obj.strftime("%H-%M")
 
         timestamp_formatted = f"{formatted_date}_{formatted_time}"
 
