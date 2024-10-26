@@ -48,6 +48,7 @@ jobs:
             -e VISION_BRAIN_API_KEY=${{ secrets.VISION_BRAIN_API_KEY }} \
             -e BACKEND_API_URL=${{ secrets.BACKEND_API_URL }} \
             -e BACKEND_API_KEY=${{ secrets.BACKEND_API_KEY }} \
+            -e OLLAMA_SERVER=${{ secrets.OLLAMA_SERVER }} \
             --restart always \
             --name elongpt-bot \
             ${{ secrets.DOCKER_USERNAME }}/elongpt:latest
