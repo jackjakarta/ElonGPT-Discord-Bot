@@ -81,7 +81,7 @@ def s3_save_image(discord_user: str, image_url: str, prompt: str):
 
 
 def db_get_user_images(discord_user: str):
-    endpoint_url = get_endpoint(f"images")
+    endpoint_url = get_endpoint("images")
     query_endpoint = f"{endpoint_url}?discordUser={discord_user}"
     headers = get_headers()
 
