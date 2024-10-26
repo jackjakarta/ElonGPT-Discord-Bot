@@ -49,6 +49,7 @@ jobs:
             -e BACKEND_API_URL=${{ secrets.BACKEND_API_URL }} \
             -e BACKEND_API_KEY=${{ secrets.BACKEND_API_KEY }} \
             -e OLLAMA_SERVER=${{ secrets.OLLAMA_SERVER }} \
+            -e OLLAMA_MODEL=${{ secrets.OLLAMA_MODEL }} \
             --restart always \
             --name elongpt-bot \
             ${{ secrets.DOCKER_USERNAME }}/elongpt:latest
