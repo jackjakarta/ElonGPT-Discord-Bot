@@ -126,7 +126,7 @@ async def recipe_command(message):
 
 
 async def get_recipes_command(message):
-    await message.channel.send(f"***Not implemented yet***")
+    await message.channel.send("***Not implemented yet***")
 
 
 async def chat_command(message):
@@ -217,7 +217,7 @@ async def classify_command(message):
 
         api_response = db_create_classification(message.author.name, input_url, answer)
         print(api_response)
-        print(f"Image classification saved to db.")
+        print("Image classification saved to db.")
 
     except requests.exceptions.HTTPError as e:
         embed = create_embed(title="API Error:", description=e)
