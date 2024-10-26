@@ -60,8 +60,8 @@ def check_moderate(input_text: str) -> bool:
 
     if any(getattr(categories_object, attr) for attr in categories_object.__dict__):
         return True
-    else:
-        return False
+
+    return False
 
 
 class RandomGenerator:

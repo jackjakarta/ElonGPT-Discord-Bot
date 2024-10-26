@@ -54,19 +54,19 @@ async def fast_command(message):
     prompt = message.content[6:]
     try:
         if check_moderate(prompt):
-            await message.channel.send(
+            return await message.channel.send(
                 "***Prompt is not appropriate and contains harmful content***"
             )
-        else:
-            ai = ChatGPT(model="gpt-4o-mini")
-            answer = ai.ask(prompt)
 
-            await message.channel.send(
-                f"***Answer for {message.author.name}:***\n\n{answer}"
-            )
+        ai = ChatGPT(model="gpt-4o-mini")
+        answer = ai.ask(prompt)
 
-            api_response = db_create_completion(message.author.name, prompt, answer)
-            print(api_response)
+        await message.channel.send(
+            f"***Answer for {message.author.name}:***\n\n{answer}"
+        )
+
+        api_response = db_create_completion(message.author.name, prompt, answer)
+        print(api_response)
 
     except requests.exceptions.HTTPError as e:
         embed = create_embed(title="API Error:", description=e)
@@ -191,11 +191,13 @@ async def get_images_command(message):
         user_images = db_get_user_images(message.author.name)
         print(user_images)
 
-        if user_images:
-            for image in user_images:
-                await message.author.send(image.get("imageUrl"))
-        else:
-            await message.author.send(f"No images found for {message.author.name}")
+        if not user_images:
+            return await message.author.send(
+                f"No images found for {message.author.name}"
+            )
+
+        for image in user_images:
+            await message.author.send(image.get("imageUrl"))
 
     except Exception as e:
         embed = create_embed(title="Unknown Error:", description=e)
@@ -217,7 +219,9 @@ async def classify_command(message):
 
         api_response = db_create_classification(message.author.name, input_url, answer)
         print(api_response)
-        print("Image classification saved to db.")
+
+        if api_response:
+            print("Image classification saved to db.")
 
     except requests.exceptions.HTTPError as e:
         embed = create_embed(title="API Error:", description=e)
@@ -232,13 +236,21 @@ async def classify_command(message):
 
 # API Calls Commands
 async def price_command(message):
-    parts = message.content.split(" ")
-    symbol = parts[1].upper()
+    try:
+        parts = message.content.split(" ")
+        symbol = parts[1].upper()
 
-    params = {"symbol": symbol, "convert": "USD", "CMC_PRO_API_KEY": CMC_API_KEY}
-    response = requests.get(CMC_API_URL, params=params)
+        params = {"symbol": symbol, "convert": "USD", "CMC_PRO_API_KEY": CMC_API_KEY}
+        response = requests.get(CMC_API_URL, params=params)
 
-    if response.status_code == 200:
+        if response.status_code != 200:
+            embed = create_embed(
+                title="API Error",
+                description=f"Could not get price and market capitalization for {symbol}",
+            )
+
+            return await message.channel.send(embed=embed)
+
         data = response.json()
         price = data["data"][symbol]["quote"]["USD"]["price"]
         market_cap = data["data"][symbol]["quote"]["USD"]["market_cap"]
@@ -246,10 +258,16 @@ async def price_command(message):
         embed = create_embed(title=symbol, description=api_response)
 
         await message.channel.send(embed=embed)
-    else:
-        await message.channel.send(
-            f"Could not get price and market capitalization for {symbol}"
-        )
+
+    except KeyError as e:
+        embed = create_embed(title=e, description="Invalid cryptocurrency symbol")
+        await message.channel.send(embed=embed)
+        print(f"API Error: {e}, Invalid cryptocurrency symbol")
+
+    except Exception as e:
+        embed = create_embed(title="API Error", description=e)
+        await message.channel.send(embed=embed)
+        print(f"API Error: {e}")
 
 
 async def tts_command(message):
@@ -279,9 +297,10 @@ async def tts_command(message):
     except requests.exceptions.RequestException as e:
         await message.channel.send(f"An error occurred: {e}")
         print(f"An error occurred: {e}")
-    else:
-        print("API call was successful!")
-        print(f"API Call by {message.author.name} - {data}")
+
+    except Exception as e:
+        await message.channel.send(f"An error occurred: {e}")
+        print(f"An error occurred: {e}")
 
 
 async def joke_command(message):
@@ -290,30 +309,33 @@ async def joke_command(message):
     # Get and format joke categories
     categories_url = "https://api.chucknorris.io/jokes/categories"
     get_categories = requests.get(categories_url)
-    get_categories_list = get_categories.json()
-    categories = ", ".join(get_categories_list)
+    categories_list = get_categories.json()
+    categories = ", ".join(categories_list)
 
-    if category not in get_categories_list:
-        await message.channel.send(f"**Available categories:** {categories}")
-    else:
-        try:
-            joke_url = f"https://api.chucknorris.io/jokes/random?category={category}"
-            api_response = requests.get(joke_url)
+    if category not in categories_list:
+        return await message.channel.send(f"**Available categories:** {categories}")
 
-            if api_response.status_code == 200:
-                joke = api_response.json()
-                joke_format = joke.get("value")
-                await message.channel.send(joke_format)
-            else:
-                embed = create_embed(
-                    title="API Call Failed:",
-                    description="Could not retrieve joke from Chuck Norris " "API.",
-                )
-                await message.channel.send(embed=embed)
-        except Exception as e:
-            embed = create_embed(title="API Call Error:", description=e)
-            await message.channel.send(embed=embed)
-            print(f"API Call Error: {e}")
+    try:
+        joke_url = f"https://api.chucknorris.io/jokes/random?category={category}"
+        api_response = requests.get(joke_url)
+
+        if api_response.status_code != 200:
+            embed = create_embed(
+                title="API Call Failed:",
+                description="Could not retrieve joke from Chuck Norris " "API.",
+            )
+
+            return await message.channel.send(embed=embed)
+
+        joke_json = api_response.json()
+        joke_content = joke_json.get("value")
+
+        await message.channel.send(joke_content)
+
+    except Exception as e:
+        embed = create_embed(title="API Call Error:", description=e)
+        await message.channel.send(embed=embed)
+        print(f"API Call Error: {e}")
 
 
 # Own Commands
