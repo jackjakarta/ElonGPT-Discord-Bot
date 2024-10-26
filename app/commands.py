@@ -91,6 +91,9 @@ async def ollama_command(message):
             f"***Answer for {message.author.name}:***\n\n{response}"
         )
 
+        api_response = db_create_completion(message.author.name, prompt, response)
+        print(api_response)
+
     except ConnectError as e:
         description = f"Connection to Model failed. Error: {e}"
         embed = create_embed(title="Model Connection Error:", description=description)
@@ -175,10 +178,10 @@ async def imagine_command(message):
         ai.generate_image(prompt)
 
         await message.channel.send(ai.image_url)
-        save_image = s3_save_image(
+        saved_image = s3_save_image(
             image_url=ai.image_url, discord_user=message.author.name, prompt=prompt
         )
-        print(save_image)
+        print(saved_image)
 
     except Exception as e:
         embed = create_embed(title="Unknown Error:", description=e)

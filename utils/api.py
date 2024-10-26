@@ -86,6 +86,10 @@ def db_get_user_images(discord_user: str):
     headers = get_headers()
 
     response = requests.get(url=query_endpoint, headers=headers)
+
+    if response.status_code == 404:
+        return []
+
     response.raise_for_status()
 
     return response.json()
