@@ -2,3 +2,6 @@ data
 env
 generated_images
 docker_commands.txt
+.pre-commit-config.yaml
+start_bot.sh
+docs
