@@ -6,8 +6,19 @@ from httpx import ConnectError
 from app.ai.chat import ChatGPT, ImageClassify, Ollama
 from app.ai.imagine import ImageDallE
 from utils import create_embed, check_moderate
-from utils.api import db_create_recipe, db_create_completion, db_create_classification, s3_save_image, db_get_user_images
-from utils.settings import CMC_API_KEY, CMC_API_URL, VISION_BRAIN_API_KEY, VISION_BRAIN_API_URL
+from utils.api import (
+    db_create_recipe,
+    db_create_completion,
+    db_create_classification,
+    s3_save_image,
+    db_get_user_images,
+)
+from utils.settings import (
+    CMC_API_KEY,
+    CMC_API_URL,
+    VISION_BRAIN_API_KEY,
+    VISION_BRAIN_API_URL,
+)
 
 
 # Text Generation Commands
@@ -19,7 +30,9 @@ async def ask_command(message):
         prompt = message.content[5:]
         answer = ai.ask(prompt)
 
-        await message.channel.send(f"***Answer for {message.author.name}:***\n\n{answer}")
+        await message.channel.send(
+            f"***Answer for {message.author.name}:***\n\n{answer}"
+        )
 
         api_response = db_create_completion(message.author.name, prompt, answer)
         print(api_response)
@@ -41,12 +54,16 @@ async def fast_command(message):
     prompt = message.content[6:]
     try:
         if check_moderate(prompt):
-            await message.channel.send("***Prompt is not appropriate and contains harmful content***")
+            await message.channel.send(
+                "***Prompt is not appropriate and contains harmful content***"
+            )
         else:
             ai = ChatGPT(model="gpt-4o-mini")
             answer = ai.ask(prompt)
 
-            await message.channel.send(f"***Answer for {message.author.name}:***\n\n{answer}")
+            await message.channel.send(
+                f"***Answer for {message.author.name}:***\n\n{answer}"
+            )
 
             api_response = db_create_completion(message.author.name, prompt, answer)
             print(api_response)
@@ -70,7 +87,9 @@ async def ollama_command(message):
 
         prompt = message.content[8:]
         response = ai.ask(prompt)
-        await message.channel.send(f"***Answer for {message.author.name}:***\n\n{response}")
+        await message.channel.send(
+            f"***Answer for {message.author.name}:***\n\n{response}"
+        )
 
     except ConnectError as e:
         description = f"Connection to Model failed. Error: {e}"
@@ -88,7 +107,9 @@ async def recipe_command(message):
         ai = ChatGPT()
         recipe = ai.ask(prompt)
 
-        await message.channel.send(f"***Recipe for {message.author.name}:***\n\n{recipe}")
+        await message.channel.send(
+            f"***Recipe for {message.author.name}:***\n\n{recipe}"
+        )
 
         recipe_response = db_create_recipe(message.author.name, ingredients, recipe)
         print(recipe_response)
@@ -125,18 +146,15 @@ async def chat_command(message):
             responses = [
                 f"Hello {message.author.name}, use ***?chat your question here*** to chat with the bot or  "
                 "***?chat clear*** to reset the conversation. Use ***?help*** to see all commands.",
-
                 f"Hey there, {message.author.name}! Feel free to interact with me by typing ***?chat your question "
                 "here***. Need a fresh start? Just type ***?chat clear***. For a list of all commands, type "
                 "***?help***.",
-
                 f"Greetings, {message.author.name}! Use ***?chat your question*** here to start a conversation with "
                 "me, or type ***?chat clear*** if you want to begin anew. Curious about what else I can do? Type "
                 "***?help*** for a full list of commands.",
-
                 f"Hi {message.author.name}! To chat with me, type ***?chat your question here***. Want to clear our "
                 "conversation? Just enter ***?chat clear***. If you need assistance or want to explore more commands, "
-                "type ***?help***."
+                "type ***?help***.",
             ]
             await message.channel.send("***Check your DMs***")
             await message.author.send(choice(responses))
@@ -157,7 +175,9 @@ async def imagine_command(message):
         ai.generate_image(prompt)
 
         await message.channel.send(ai.image_url)
-        save_image = s3_save_image(image_url=ai.image_url, discord_user=message.author.name, prompt=prompt)
+        save_image = s3_save_image(
+            image_url=ai.image_url, discord_user=message.author.name, prompt=prompt
+        )
         print(save_image)
 
     except Exception as e:
@@ -180,7 +200,7 @@ async def get_images_command(message):
     except Exception as e:
         embed = create_embed(title="Unknown Error:", description=e)
         await message.author.send(embed=embed)
-        print(f"Unknown Error: {e}")    
+        print(f"Unknown Error: {e}")
 
 
 async def classify_command(message):
@@ -191,7 +211,9 @@ async def classify_command(message):
         ai = ImageClassify()
         answer = ai.classify_image(input_url)
 
-        await message.channel.send(f"***Image Classification for {message.author.name}:***\n\n{answer}")
+        await message.channel.send(
+            f"***Image Classification for {message.author.name}:***\n\n{answer}"
+        )
 
         api_response = db_create_classification(message.author.name, input_url, answer)
         print(api_response)
@@ -213,11 +235,7 @@ async def price_command(message):
     parts = message.content.split(" ")
     symbol = parts[1].upper()
 
-    params = {
-        "symbol": symbol,
-        "convert": "USD",
-        "CMC_PRO_API_KEY": CMC_API_KEY
-    }
+    params = {"symbol": symbol, "convert": "USD", "CMC_PRO_API_KEY": CMC_API_KEY}
     response = requests.get(CMC_API_URL, params=params)
 
     if response.status_code == 200:
@@ -229,7 +247,9 @@ async def price_command(message):
 
         await message.channel.send(embed=embed)
     else:
-        await message.channel.send(f"Could not get price and market capitalization for {symbol}")
+        await message.channel.send(
+            f"Could not get price and market capitalization for {symbol}"
+        )
 
 
 async def tts_command(message):
@@ -251,14 +271,16 @@ async def tts_command(message):
         data = response.json()
         md_encode = f"[Download File]({data.get('file')})"
 
-        await message.channel.send(f"***Audio for {message.author.name}:***\n\n***File:*** {md_encode}\n"
-                                   f"***Text:*** {data.get('text')}")
+        await message.channel.send(
+            f"***Audio for {message.author.name}:***\n\n***File:*** {md_encode}\n"
+            f"***Text:*** {data.get('text')}"
+        )
 
     except requests.exceptions.RequestException as e:
-        await message.channel.send(f'An error occurred: {e}')
-        print(f'An error occurred: {e}')
+        await message.channel.send(f"An error occurred: {e}")
+        print(f"An error occurred: {e}")
     else:
-        print('API call was successful!')
+        print("API call was successful!")
         print(f"API Call by {message.author.name} - {data}")
 
 
@@ -283,8 +305,10 @@ async def joke_command(message):
                 joke_format = joke.get("value")
                 await message.channel.send(joke_format)
             else:
-                embed = create_embed(title="API Call Failed:", description="Could not retrieve joke from Chuck Norris "
-                                                                           "API.")
+                embed = create_embed(
+                    title="API Call Failed:",
+                    description="Could not retrieve joke from Chuck Norris " "API.",
+                )
                 await message.channel.send(embed=embed)
         except Exception as e:
             embed = create_embed(title="API Call Error:", description=e)
@@ -296,7 +320,7 @@ async def joke_command(message):
 async def poll_command(message):
     await message.channel.send(f"***Creating poll for {message.author.name}***")
 
-    poll_data = message.content[6:].split('/')
+    poll_data = message.content[6:].split("/")
     question = poll_data[0].strip()
     options = [option.strip() for option in poll_data[1:]]
 
@@ -308,22 +332,24 @@ async def poll_command(message):
     poll_message = await message.channel.send(embed=embed)
 
     for i in range(len(options)):
-        await poll_message.add_reaction(f'{i + 1}\u20e3')
+        await poll_message.add_reaction(f"{i + 1}\u20e3")
 
 
 async def help_command(message):
-    help_text = "***?ask*** - insert a question and get an answer from Elon (gpt-4) \n\n" \
-                "***?fast*** - insert a question and get an answer in fast mode (gpt-3.5) \n\n" \
-                "***?chat*** - open chat session and then use ?chat 'prompt' to chat with Elon \n\n" \
-                "***?ollama*** -  insert a question and get an answer from your selected model (default = orca-mini\n\n" \
-                "***?recipe*** - insert ingredients and get a recipe \n\n" \
-                "***?myrecipes*** - get your recipes \n\n" \
-                "***?image*** - insert prompt to generate an image based on a description \n\n" \
-                "***?classify*** - insert image url to generate an image description \n\n" \
-                "***?price*** - insert cryptocurrency symbol to get price and market cap \n\n" \
-                "***?joke*** - insert category to get chuck norris joke \n\n" \
-                "***?poll*** - example: ?poll what color?/blue/red/yellow \n\n" \
-                "***?help*** - list of all commands \n"
+    help_text = (
+        "***?ask*** - insert a question and get an answer from Elon (gpt-4) \n\n"
+        "***?fast*** - insert a question and get an answer in fast mode (gpt-3.5) \n\n"
+        "***?chat*** - open chat session and then use ?chat 'prompt' to chat with Elon \n\n"
+        "***?ollama*** -  insert a question and get an answer from your selected model (default = orca-mini\n\n"
+        "***?recipe*** - insert ingredients and get a recipe \n\n"
+        "***?myrecipes*** - get your recipes \n\n"
+        "***?image*** - insert prompt to generate an image based on a description \n\n"
+        "***?classify*** - insert image url to generate an image description \n\n"
+        "***?price*** - insert cryptocurrency symbol to get price and market cap \n\n"
+        "***?joke*** - insert category to get chuck norris joke \n\n"
+        "***?poll*** - example: ?poll what color?/blue/red/yellow \n\n"
+        "***?help*** - list of all commands \n"
+    )
 
     embed = create_embed(title="list of commands:", description=help_text)
     await message.channel.send(embed=embed)

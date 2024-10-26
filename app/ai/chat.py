@@ -3,7 +3,13 @@ import os
 from openai import OpenAI
 from ollama import Client
 from utils import load_json_chat, save_json
-from utils.settings import OPENAI_API_KEY, CHATS_FOLDER, OLLAMA_SERVER, OPENAI_MODEL, OLLAMA_MODEL
+from utils.settings import (
+    OPENAI_API_KEY,
+    CHATS_FOLDER,
+    OLLAMA_SERVER,
+    OPENAI_MODEL,
+    OLLAMA_MODEL,
+)
 
 
 class ChatGPT:
@@ -24,16 +30,17 @@ class ChatGPT:
         self.prompt = prompt
 
         if self.prompt:
-            self.messages.append(
-                {"role": "user", "content": self.prompt}
-            )
+            self.messages.append({"role": "user", "content": self.prompt})
 
         self.completion = self.client.chat.completions.create(
-            model=self.model,
-            messages=self.messages,
-            max_tokens=max_tokens
+            model=self.model, messages=self.messages, max_tokens=max_tokens
         )
-        self.messages.append({"role": "assistant", "content": str(self.completion.choices[0].message.content)})
+        self.messages.append(
+            {
+                "role": "assistant",
+                "content": str(self.completion.choices[0].message.content),
+            }
+        )
 
         return self.completion.choices[0].message.content
 
@@ -48,7 +55,7 @@ class ChatGPT:
             {
                 "role": "system",
                 "content": "You are ChatGPT, a large language model trained by OpenAI. Answer as concisely as "
-                           "possible."
+                "possible.",
             }
         )
 
@@ -91,9 +98,7 @@ class ImageClassify(ChatGPT):
 
         try:
             self.completion = self.client.chat.completions.create(
-                model=self.model,
-                messages=self.messages,
-                max_tokens=650
+                model=self.model, messages=self.messages, max_tokens=650
             )
             assistant_response = self.completion.choices[0].message.content
         except Exception as e:
@@ -116,12 +121,10 @@ class Ollama:
         self.prompt = prompt
 
         if self.prompt:
-            self.messages.append(
-                {"role": "user", "content": self.prompt}
-            )
+            self.messages.append({"role": "user", "content": self.prompt})
 
         self.completion = self.client.chat(model=self.model, messages=self.messages)
-        response = self.completion.get('message').get('content')
+        response = self.completion.get("message").get("content")
 
         self.messages.append({"role": "assistant", "content": response})
 
