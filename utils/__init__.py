@@ -2,7 +2,7 @@ import json
 import random
 import string
 import time
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 
 from discord import Embed
 from openai import OpenAI

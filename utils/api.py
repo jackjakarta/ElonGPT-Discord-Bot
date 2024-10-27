@@ -1,6 +1,6 @@
 import requests
 
-from .settings import BACKEND_API_URL, BACKEND_API_KEY
+from .settings import BACKEND_API_KEY, BACKEND_API_URL
 
 
 def get_endpoint(endpoint: str) -> str:
@@ -86,10 +86,9 @@ def db_get_user_images(discord_user: str):
     headers = get_headers()
 
     response = requests.get(url=query_endpoint, headers=headers)
-
-    if response.status_code == 404:
-        return []
-
     response.raise_for_status()
+
+    if response.status_code == 218:
+        return []
 
     return response.json()
