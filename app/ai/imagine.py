@@ -4,7 +4,7 @@ import requests
 from openai import OpenAI
 
 from utils import RandomGenerator
-from utils.settings import OPENAI_API_KEY, IMAGE_FOLDER
+from utils.settings import IMAGE_FOLDER, OPENAI_API_KEY
 
 
 class ImageDallE:

@@ -1,14 +1,15 @@
 import os
 
-from openai import OpenAI
 from ollama import Client
+from openai import OpenAI
+
 from utils import load_json_chat, save_json
 from utils.settings import (
-    OPENAI_API_KEY,
     CHATS_FOLDER,
-    OLLAMA_SERVER,
-    OPENAI_MODEL,
     OLLAMA_MODEL,
+    OLLAMA_SERVER,
+    OPENAI_API_KEY,
+    OPENAI_MODEL,
 )
 
 

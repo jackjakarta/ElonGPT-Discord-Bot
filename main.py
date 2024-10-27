@@ -2,21 +2,19 @@ import discord
 
 from app.commands import (
     ask_command,
-    fast_command,
-    imagine_command,
-    recipe_command,
     chat_command,
-    ollama_command,
-    get_images_command,
-)
-from app.commands import (
-    price_command,
-    joke_command,
-    poll_command,
-    help_command,
     classify_command,
-    tts_command,
+    fast_command,
+    get_images_command,
     get_recipes_command,
+    help_command,
+    imagine_command,
+    joke_command,
+    ollama_command,
+    poll_command,
+    price_command,
+    recipe_command,
+    tts_command,
 )
 from utils.settings import DISCORD_TOKEN
 

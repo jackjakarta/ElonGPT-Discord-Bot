@@ -28,6 +28,10 @@ jobs:
         run: |
           black --check .
 
-      - name: Linting
+      - name: Import order check
+        run: |
+          isort --check-only .
+
+      - name: Linting check
         run: |
           flake8 .
